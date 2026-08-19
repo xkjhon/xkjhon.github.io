@@ -422,7 +422,7 @@ function renderizarChipsFiltro() {
   const container = document.getElementById('regionChipsContainer');
   if (!container) return;
 
-  const regioes = ['GERAL', 'ANA', 'LUZ', 'FOR', 'URU', 'RVR', 'MNH'];
+  const regioes = ['GERAL', 'ANA', 'URU', 'LUZ', 'FOR', 'RVR', 'MNH'];
 
   container.innerHTML = regioes.map(function(cod) {
     const isActive = AppState.regiaoSelecionada === cod;
@@ -501,7 +501,7 @@ function renderizarMetasEGrafico() {
 
   const containerReg = document.getElementById('regionalGoalsGrid');
   if (containerReg) {
-    const codigosReg = ['ANA', 'LUZ', 'FOR', 'URU', 'RVR', 'MNH'];
+    const codigosReg = ['ANA', 'URU', 'LUZ', 'FOR', 'RVR', 'MNH'];
     containerReg.innerHTML = codigosReg.map(function(c) {
       const meta = AppState.metas[c] || 0;
       const d = AppState.dados.regionais[c];
@@ -535,7 +535,7 @@ function renderizarChartJs() {
   const canvas = document.getElementById('goalsChart');
   if (!canvas || typeof Chart === 'undefined') return;
 
-  const codigos = ['ANA', 'LUZ', 'FOR', 'URU', 'RVR', 'MNH'];
+  const codigos = ['ANA', 'URU', 'LUZ', 'FOR', 'RVR', 'MNH'];
   const labels = codigos.map(function(c) { return NOME_REGIAO[c]; });
   const metasData = codigos.map(function(c) { return AppState.metas[c] || 0; });
   const realizadosData = codigos.map(function(c) {

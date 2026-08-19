@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="eCobOne Mobile — Dashboard de Operações e Metas Otimizado para Celular">
+  <meta name="theme-color" content="#08110b">
+  <title>eCobOne Mobile — Operações &amp; Metas</title>
+  
+  <!-- Estilos Mobile -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="../ecob-one.ico" type="image/x-icon">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="mobile-app">
+
+    <!-- Header Fixo Superior -->
+    <header class="mobile-header">
+      <div class="header-top">
+        <div class="brand">
+          <img src="../Sprites/logo.png" alt="Logo" class="logo">
+          <div class="brand-info">
+            <h1>eCobOne</h1>
+            <span class="sub"><span class="pulse-dot"></span> Ao Vivo • Mobile</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-icon" id="btnRefreshMobile" title="Atualizar Dados">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Info e Status -->
+      <div class="status-bar">
+        <span id="lastUpdateLabelMobile">Base: --:--:--</span>
+        <span class="dot">•</span>
+        <span id="timerLabelMobile">30s</span>
+      </div>
+
+      <!-- Chips de Filtro por Região com Scroll Horizontal -->
+      <nav class="region-chips-mobile" id="regionChipsMobile">
+        <!-- Renderizado via code.js -->
+      </nav>
+    </header>
+
+    <!-- Conteúdo Principal das Abas -->
+    <main class="mobile-content">
+
+      <!-- Banner de Aviso/Alerta no Topo -->
+      <div class="mobile-alert-banner" id="mobileAlertBanner" style="display: none;">
+        <!-- Renderizado via code.js -->
+      </div>
+
+      <!-- ABA 1: VISÃO GERAL (INÍCIO) -->
+      <section class="tab-pane active" id="tabGeral">
+        
+        <!-- KPIs Principais em Cards (Serviços em Campo em Primeiro) -->
+        <div class="kpi-grid">
+          <div class="kpi-card full-width">
+            <div class="kpi-icon">📌</div>
+            <div class="kpi-data">
+              <span class="kpi-num" id="mEmCampo">0</span>
+              <span class="kpi-label">Serviços em Campo (<span id="mTotalExec">0</span> total exec.)</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon">⚡</div>
+            <div class="kpi-data">
+              <span class="kpi-num" id="mServicos">0</span>
+              <span class="kpi-label">Serviços (SERV)</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon">🔌</div>
+            <div class="kpi-data">
+              <span class="kpi-num" id="mReligas">0</span>
+              <span class="kpi-label">Religações (RLGA)</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon">💳</div>
+            <div class="kpi-data">
+              <span class="kpi-num" id="mNePago">0</span>
+              <span class="kpi-label">NE / Pago</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon">💰</div>
+            <div class="kpi-data">
+              <span class="kpi-num" id="mFaturamento">R$ 0,00</span>
+              <span class="kpi-label">Faturamento NE/Pago</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card de Meta Global -->
+        <div class="mobile-card goal-card-mobile">
+          <div class="card-header">
+            <span class="icon">📊</span>
+            <h3 id="mMetaTitle">Meta Global eCobOne</h3>
+          </div>
+          <div class="goal-circle">
+            <span class="goal-pct" id="mGlobalPct">0%</span>
+            <span class="goal-sub">Concluído</span>
+          </div>
+          <div class="goal-progress-bg">
+            <div class="goal-progress-fill" id="mGlobalProgressBar" style="width: 0%;"></div>
+          </div>
+          <div class="goal-details" id="mGlobalStatsText">
+            <span><strong>0</strong> Realizados</span>
+            <span>Meta: <strong>0</strong></span>
+          </div>
+        </div>
+
+        <!-- Gráfico de Comparação por Região -->
+        <div class="mobile-card">
+          <div class="card-header">
+            <span class="icon">📈</span>
+            <h3>Realizado vs Meta por Região</h3>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="mobileGoalsChart"></canvas>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ABA 2: MAIORES PRODUÇÕES (TOP 10) -->
+      <section class="tab-pane" id="tabMelhores">
+        <div class="mobile-card">
+          <div class="card-header">
+            <span class="icon">🏆</span>
+            <h3>TOP 10 Maiores Produções</h3>
+          </div>
+          <div class="leaderboard-list" id="mLeaderboardBody">
+            <!-- Renderizado via code.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 3: MENORES PRODUÇÕES (TOP 10 PIORES) -->
+      <section class="tab-pane" id="tabPiores">
+        <div class="mobile-card theme-red-card">
+          <div class="card-header">
+            <span class="icon">🔻</span>
+            <h3 style="color: #fca5a5;">TOP 10 Menores Produções</h3>
+          </div>
+          <div class="leaderboard-list" id="mLeaderboardPioresBody">
+            <!-- Renderizado via code.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 4: METAS POR REGIÃO -->
+      <section class="tab-pane" id="tabRegioes">
+        <div class="mobile-card">
+          <div class="card-header">
+            <span class="icon">🎯</span>
+            <h3>Metas por Região</h3>
+          </div>
+          <div class="regional-cards-list" id="mRegionalGoalsGrid">
+            <!-- Renderizado via code.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 5: AVISOS E ALERTAS -->
+      <section class="tab-pane" id="tabAvisos">
+        <div class="mobile-card">
+          <div class="card-header">
+            <span class="icon">📢</span>
+            <h3>Avisos e Notificações</h3>
+          </div>
+          <div class="avisos-mobile-list" id="mAvisosContent">
+            <!-- Renderizado via code.js -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Navegação Inferior (Bottom Bar) -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="navToTab('tabGeral', this)">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Início</span>
+      </button>
+
+      <button class="nav-item" onclick="navToTab('tabMelhores', this)">
+        <span class="nav-icon">🏆</span>
+        <span class="nav-label">Maiores</span>
+      </button>
+
+      <button class="nav-item" onclick="navToTab('tabPiores', this)">
+        <span class="nav-icon">🔻</span>
+        <span class="nav-label">Menores</span>
+      </button>
+
+      <button class="nav-item" onclick="navToTab('tabRegioes', this)">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Regiões</span>
+      </button>
+
+      <button class="nav-item" onclick="navToTab('tabAvisos', this)" id="navItemAvisos">
+        <span class="nav-icon">📢</span>
+        <span class="nav-label">Avisos</span>
+        <span class="badge-dot" id="navAvisoBadge" style="display: none;"></span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script src="code.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /* =============================================================
-   eCobOne — code.js (Módulo de Dados, Notificações e Renderização LG WebOS Ready)
+   eCobOne Mobile — code.js (Dados & Lógica Mobile Otimizada)
    ============================================================= */
 
 const AppState = {
@@ -24,6 +24,7 @@ const AppState = {
   timerInterval: null
 };
 
+// Ordem definida pelo usuario: Anapolis, Uruacu, Luziania, Formosa, Rio Verde, Morrinhos
 const REGIOES_ORDEM = ['ANA', 'URU', 'LUZ', 'FOR', 'RVR', 'MNH'];
 
 const NOME_REGIAO = {
@@ -40,25 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
   iniciarCronometro();
   carregarTudo();
 
-  tentarTelaCheia();
-
-  const entrarTelaCheiaPrimeiraInteracao = function() {
-    tentarTelaCheia();
-    document.removeEventListener('click', entrarTelaCheiaPrimeiraInteracao);
-    document.removeEventListener('keydown', entrarTelaCheiaPrimeiraInteracao);
-  };
-  document.addEventListener('click', entrarTelaCheiaPrimeiraInteracao);
-  document.addEventListener('keydown', entrarTelaCheiaPrimeiraInteracao);
-
-  const btnFull = document.getElementById('btnFullscreen');
-  if (btnFull) {
-    btnFull.addEventListener('click', function(e) {
-      e.stopPropagation();
-      alternarTelaCheia();
-    });
-  }
-
-  const btnRef = document.getElementById('btnRefresh');
+  const btnRef = document.getElementById('btnRefreshMobile');
   if (btnRef) {
     btnRef.addEventListener('click', function() {
       carregarTudo();
@@ -66,41 +49,27 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-function tentarTelaCheia() {
-  try {
-    const elem = document.documentElement;
-    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-      const promise = elem.requestFullscreen ? elem.requestFullscreen() :
-                      elem.webkitRequestFullscreen ? elem.webkitRequestFullscreen() :
-                      elem.msRequestFullscreen ? elem.msRequestFullscreen() : null;
-      if (promise && promise.catch) {
-        promise.catch(function() {});
-      }
-    }
-  } catch (err) {}
-}
+function navToTab(tabId, el) {
+  const panes = document.querySelectorAll('.tab-pane');
+  panes.forEach(function(p) { p.classList.remove('active'); });
 
-function alternarTelaCheia() {
-  try {
-    if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    } else {
-      tentarTelaCheia();
-    }
-  } catch (err) {}
+  const targetPane = document.getElementById(tabId);
+  if (targetPane) targetPane.classList.add('active');
+
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(function(item) { item.classList.remove('active'); });
+  if (el) el.classList.add('active');
+
+  if (tabId === 'tabGeral') {
+    setTimeout(renderizarChartJsMobile, 100);
+  }
 }
 
 function iniciarCronometro() {
   if (AppState.timerInterval) clearInterval(AppState.timerInterval);
   AppState.countdownSecs = 30;
   
-  const labelTimer = document.getElementById('timerLabel');
+  const labelTimer = document.getElementById('timerLabelMobile');
   
   AppState.timerInterval = setInterval(function() {
     AppState.countdownSecs--;
@@ -122,11 +91,11 @@ async function carregarTudo() {
   ]);
 
   atualizarHorarioAtualizacao();
-  renderizarDashboard();
+  renderizarDashboardMobile();
 }
 
 function atualizarHorarioAtualizacao() {
-  const elem = document.getElementById('lastUpdateLabel');
+  const elem = document.getElementById('lastUpdateLabelMobile');
   if (elem) {
     if (AppState.dataAtualizacaoBase) {
       const partes = AppState.dataAtualizacaoBase.split(' ');
@@ -140,14 +109,14 @@ function atualizarHorarioAtualizacao() {
 }
 
 // -------------------------------------------------------------
-// Carregamento de Avisos.txt
+// Carregamento dos arquivos de dados
 // -------------------------------------------------------------
 async function carregarAvisos() {
   const rotas = [
-    './Python-Updater/Files/Avisos.txt',
     '../Python-Updater/Files/Avisos.txt',
-    './Files/Avisos.txt',
+    '../eCobOne/Python-Updater/Files/Avisos.txt',
     '../Files/Avisos.txt',
+    './Files/Avisos.txt',
     'Avisos.txt'
   ];
 
@@ -165,54 +134,12 @@ async function carregarAvisos() {
   AppState.avisos = [];
 }
 
-function renderizarAvisos() {
-  const container = document.getElementById('avisosContent');
-  if (!container) return;
-
-  const alertas = AppState.dados.alertas || [];
-  const temAlertas = alertas.length > 0;
-
-  if (document.body && document.body.classList) {
-    document.body.classList.toggle('theme-alert-yellow', temAlertas);
-  }
-
-  if (temAlertas) {
-    container.innerHTML = alertas.map(function(item) {
-      return `
-        <div class="aviso-alert-card">
-          <div class="alert-card-header">
-            <span class="alert-tag">ALERTA</span>
-            <span class="alert-ss-title">🐐 SS nº ${item.ss}</span>
-          </div>
-          <div class="alert-colab-text">
-            <strong>${item.colab}</strong> — Religa em Alerta!
-          </div>
-          <div class="alert-footer-action">
-            ⏰ Vencimento: <strong style="color: #fde047; font-size: 0.78rem;">${item.vencimento}h</strong>
-          </div>
-        </div>
-      `;
-    }).join('');
-    return;
-  }
-
-  container.innerHTML = `
-    <div class="aviso-item" style="color: var(--md-text-muted); padding: 4px 0; font-size: 0.76rem; display: flex; align-items: center; gap: 6px;">
-      <span class="aviso-bullet">🔔</span>
-      <span>Nenhuma notificação ou alerta no momento.</span>
-    </div>
-  `;
-}
-
-// -------------------------------------------------------------
-// Carregamento de Metas.txt
-// -------------------------------------------------------------
 async function carregarMetas() {
   const rotas = [
-    './Python-Updater/Files/Metas.txt',
     '../Python-Updater/Files/Metas.txt',
-    './Files/Metas.txt',
+    '../eCobOne/Python-Updater/Files/Metas.txt',
     '../Files/Metas.txt',
+    './Files/Metas.txt',
     'Metas.txt'
   ];
 
@@ -238,15 +165,12 @@ async function carregarMetas() {
   }
 }
 
-// -------------------------------------------------------------
-// Carregamento de dados.txt
-// -------------------------------------------------------------
 async function carregarDados() {
   const rotas = [
-    './Python-Updater/Files/dados.txt',
     '../Python-Updater/Files/dados.txt',
-    './Files/dados.txt',
+    '../eCobOne/Python-Updater/Files/dados.txt',
     '../Files/dados.txt',
+    './Files/dados.txt',
     'dados.txt'
   ];
 
@@ -409,42 +333,104 @@ function usarDadosFallback() {
 }
 
 // -------------------------------------------------------------
-// Renderização do Dashboard
+// Renderização do Dashboard Mobile
 // -------------------------------------------------------------
-function renderizarDashboard() {
-  renderizarAvisos();
-  renderizarChipsFiltro();
-  renderizarQuadrosMetricas();
-  renderizarMetasEGrafico();
-  renderizarLeaderboardPiores();
-  renderizarLeaderboard();
+function renderizarDashboardMobile() {
+  renderizarChipsFiltroMobile();
+  renderizarAvisosMobile();
+  renderizarQuadrosMetricasMobile();
+  renderizarMetasEGraficoMobile();
+  renderizarLeaderboardPioresMobile();
+  renderizarLeaderboardMobile();
 }
 
-function renderizarChipsFiltro() {
-  const container = document.getElementById('regionChipsContainer');
+function renderizarChipsFiltroMobile() {
+  const container = document.getElementById('regionChipsMobile');
   if (!container) return;
 
-  const regioes = ['GERAL'].concat(REGIOES_ORDEM);
+  const lista = ['GERAL'].concat(REGIOES_ORDEM);
 
-  container.innerHTML = regioes.map(function(cod) {
+  container.innerHTML = lista.map(function(cod) {
     const isActive = AppState.regiaoSelecionada === cod;
     const rotulo = cod === 'GERAL' ? '🌐 Todas (Geral)' : NOME_REGIAO[cod];
-    const tagMeta = cod !== 'GERAL' && AppState.metas[cod] ? `<span class="chip-tag">Meta ${AppState.metas[cod]}</span>` : '';
 
     return `
-      <button class="chip ${isActive ? 'active' : ''}" onclick="selecionarRegiao('${cod}')">
-        ${rotulo} ${tagMeta}
+      <button class="m-chip ${isActive ? 'active' : ''}" onclick="selecionarRegiaoMobile('${cod}')">
+        ${rotulo}
       </button>
     `;
   }).join('');
 }
 
-function selecionarRegiao(cod) {
+function selecionarRegiaoMobile(cod) {
   AppState.regiaoSelecionada = cod;
-  renderizarDashboard();
+  renderizarDashboardMobile();
 }
 
-function renderizarQuadrosMetricas() {
+function renderizarAvisosMobile() {
+  const banner = document.getElementById('mobileAlertBanner');
+  const container = document.getElementById('mAvisosContent');
+  const badgeDot = document.getElementById('navAvisoBadge');
+
+  const alertas = AppState.dados.alertas || [];
+  const temAlertas = alertas.length > 0;
+
+  if (document.body && document.body.classList) {
+    document.body.classList.toggle('theme-alert-yellow', temAlertas);
+  }
+
+  if (badgeDot) badgeDot.style.display = temAlertas ? 'block' : 'none';
+
+  if (temAlertas) {
+    if (banner) {
+      banner.style.display = 'flex';
+      banner.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="background: #f59e0b; color: #451a03; font-weight: 800; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px;">ALERTA</span>
+          <span style="color: #fef08a; font-weight: 800; font-size: 0.82rem;">SS nº ${alertas[0].ss}</span>
+        </div>
+        <div style="font-size: 0.78rem; color: #fffbeb; font-weight: 600; margin-top: 2px;">
+          <strong>${alertas[0].colab}</strong> — Religa em Alerta!
+        </div>
+        <div style="font-size: 0.72rem; color: #fde047; font-weight: 800; text-align: right;">
+          ⏰ Vencimento: ${alertas[0].vencimento}h
+        </div>
+      `;
+    }
+
+    if (container) {
+      container.innerHTML = alertas.map(function(item) {
+        return `
+          <div class="m-reg-card" style="border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.12);">
+            <div class="m-reg-top">
+              <span class="m-reg-name" style="color: #fef08a;">SS nº ${item.ss}</span>
+              <span class="m-reg-badge" style="background: #f59e0b; color: #451a03;">ALERTA</span>
+            </div>
+            <div style="font-size: 0.8rem; font-weight: 700; color: #fffbeb;">
+              Colaborador: ${item.colab}
+            </div>
+            <div style="font-size: 0.74rem; color: #fde047; font-weight: 800; margin-top: 2px;">
+              ⏰ Vencimento Estimado: ${item.vencimento}h
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    return;
+  }
+
+  if (banner) banner.style.display = 'none';
+
+  if (container) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--md-text-muted); padding: 20px 10px; font-size: 0.82rem;">
+        🔔 Nenhum aviso ou alerta pendente no momento.
+      </div>
+    `;
+  }
+}
+
+function renderizarQuadrosMetricasMobile() {
   const cod = AppState.regiaoSelecionada;
   const dados = cod === 'GERAL' ? AppState.dados.geral : AppState.dados.regionais[cod];
 
@@ -457,15 +443,15 @@ function renderizarQuadrosMetricas() {
     if (el) el.textContent = val;
   };
 
-  setVal('metricEmCampo', dados.emCampo.toLocaleString('pt-BR'));
-  setVal('metricServicos', dados.servicos.toLocaleString('pt-BR'));
-  setVal('metricReligas', dados.religas.toLocaleString('pt-BR'));
-  setVal('metricNePago', dados.nePago.toLocaleString('pt-BR'));
-  setVal('metricFaturamento', dados.faturamento);
-  setVal('metricTotalExec', `${totalExecutado.toLocaleString('pt-BR')} total exec.`);
+  setVal('mEmCampo', dados.emCampo.toLocaleString('pt-BR'));
+  setVal('mServicos', dados.servicos.toLocaleString('pt-BR'));
+  setVal('mReligas', dados.religas.toLocaleString('pt-BR'));
+  setVal('mNePago', dados.nePago.toLocaleString('pt-BR'));
+  setVal('mFaturamento', dados.faturamento);
+  setVal('mTotalExec', totalExecutado.toLocaleString('pt-BR'));
 }
 
-function renderizarMetasEGrafico() {
+function renderizarMetasEGraficoMobile() {
   const cod = AppState.regiaoSelecionada;
   
   let metaAlvo = 0;
@@ -487,21 +473,21 @@ function renderizarMetasEGrafico() {
 
   const pct = metaAlvo > 0 ? Math.min(Math.round((realizadoAlvo / metaAlvo) * 100), 100) : 0;
 
-  const elemTitle = document.getElementById('metaTitle');
+  const elemTitle = document.getElementById('mMetaTitle');
   if (elemTitle) elemTitle.textContent = cod === 'GERAL' ? 'Meta Global eCobOne' : `Meta — ${NOME_REGIAO[cod]}`;
 
-  const elemPct = document.getElementById('globalPctLabel');
+  const elemPct = document.getElementById('mGlobalPct');
   if (elemPct) elemPct.textContent = `${pct}%`;
 
-  const elemFill = document.getElementById('globalProgressBar');
+  const elemFill = document.getElementById('mGlobalProgressBar');
   if (elemFill) elemFill.style.width = `${pct}%`;
 
-  const elemStats = document.getElementById('globalStatsText');
+  const elemStats = document.getElementById('mGlobalStatsText');
   if (elemStats) {
     elemStats.innerHTML = `<span><strong>${realizadoAlvo.toLocaleString('pt-BR')}</strong> Realiz. (SERV)</span> <span>Meta: <strong>${metaAlvo.toLocaleString('pt-BR')}</strong></span>`;
   }
 
-  const containerReg = document.getElementById('regionalGoalsGrid');
+  const containerReg = document.getElementById('mRegionalGoalsGrid');
   if (containerReg) {
     containerReg.innerHTML = REGIOES_ORDEM.map(function(c) {
       const meta = AppState.metas[c] || 0;
@@ -512,28 +498,28 @@ function renderizarMetasEGrafico() {
       let statusBadge = p >= 100 ? '🏆 Batida' : p >= 60 ? '⚡ Em Progresso' : '🎯 Em Execução';
 
       return `
-        <div class="regional-card">
-          <div class="regional-card-top">
-            <span class="regional-name">${NOME_REGIAO[c]}</span>
-            <span class="regional-badge">${statusBadge}</span>
+        <div class="m-reg-card">
+          <div class="m-reg-top">
+            <span class="m-reg-name">${NOME_REGIAO[c]}</span>
+            <span class="m-reg-badge">${statusBadge}</span>
           </div>
-          <div class="regional-progress-val">
+          <div class="m-reg-vals">
             <span><strong>${real}</strong> / ${meta}</span>
             <span><strong>${p}%</strong></span>
           </div>
-          <div class="regional-bar-bg">
-            <div class="regional-bar-fill" style="width: ${p}%"></div>
+          <div class="m-reg-bar-bg">
+            <div class="m-reg-bar-fill" style="width: ${p}%"></div>
           </div>
         </div>
       `;
     }).join('');
   }
 
-  renderizarChartJs();
+  renderizarChartJsMobile();
 }
 
-function renderizarChartJs() {
-  const canvas = document.getElementById('goalsChart');
+function renderizarChartJsMobile() {
+  const canvas = document.getElementById('mobileGoalsChart');
   if (!canvas || typeof Chart === 'undefined') return;
 
   const labels = REGIOES_ORDEM.map(function(c) { return NOME_REGIAO[c]; });
@@ -561,20 +547,20 @@ function renderizarChartJs() {
       labels: labels,
       datasets: [
         {
-          label: 'Meta Planejada',
+          label: 'Meta',
           data: metasData,
           backgroundColor: metaBg,
           borderColor: metaBorder,
           borderWidth: 1.5,
-          borderRadius: 6
+          borderRadius: 4
         },
         {
-          label: 'Realizado (Hoje)',
+          label: 'Realizado',
           data: realizadosData,
           backgroundColor: barColor,
           borderColor: barBorder,
           borderWidth: 1.5,
-          borderRadius: 6
+          borderRadius: 4
         }
       ]
     },
@@ -594,7 +580,7 @@ function renderizarChartJs() {
       },
       scales: {
         x: {
-          ticks: { color: labelColor, font: { family: 'Plus Jakarta Sans', size: 9, weight: '600' } },
+          ticks: { color: labelColor, font: { family: 'Plus Jakarta Sans', size: 8, weight: '600' } },
           grid: { display: false }
         },
         y: {
@@ -606,9 +592,41 @@ function renderizarChartJs() {
   });
 }
 
-function renderizarLeaderboardPiores() {
-  const tbody = document.getElementById('leaderboardPioresBody');
-  if (!tbody) return;
+function renderizarLeaderboardMobile() {
+  const container = document.getElementById('mLeaderboardBody');
+  if (!container) return;
+
+  const cod = AppState.regiaoSelecionada;
+  const dados = cod === 'GERAL' ? AppState.dados.geral : AppState.dados.regionais[cod];
+
+  if (!dados || !dados.top10 || dados.top10.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--md-text-muted); padding: 15px;">
+        Nenhum colaborador nesta seleção.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = dados.top10.map(function(colab) {
+    let rankIcon = colab.rank === 1 ? '🥇' : colab.rank === 2 ? '🥈' : colab.rank === 3 ? '🥉' : colab.rank;
+
+    return `
+      <div class="m-leaderboard-item">
+        <div class="m-rank">${rankIcon}</div>
+        <div class="m-colab-info">
+          <div class="m-colab-name">${colab.nome}</div>
+          <div class="m-colab-sub">⚡ SERV: ${colab.serv} | 🔌 RLGA: ${colab.rlga}</div>
+        </div>
+        <div class="m-total-badge">🏆 ${colab.total}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderizarLeaderboardPioresMobile() {
+  const container = document.getElementById('mLeaderboardPioresBody');
+  if (!container) return;
 
   const cod = AppState.regiaoSelecionada;
   const dados = cod === 'GERAL' ? AppState.dados.geral : AppState.dados.regionais[cod];
@@ -621,82 +639,27 @@ function renderizarLeaderboardPiores() {
   }
 
   if (!piores || piores.length === 0) {
-    tbody.innerHTML = `
-      <tr class="leaderboard-row">
-        <td colspan="5" style="text-align: center; color: var(--md-text-muted); padding: 10px;">
-          Nenhum colaborador nesta seleção.
-        </td>
-      </tr>
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--md-text-muted); padding: 15px;">
+        Nenhum colaborador nesta seleção.
+      </div>
     `;
     return;
   }
 
-  tbody.innerHTML = piores.map(function(colab, idx) {
+  container.innerHTML = piores.map(function(colab, idx) {
     const rankNum = idx + 1;
     const rankIcon = `🔻 ${rankNum}º`;
 
     return `
-      <tr class="leaderboard-row" style="background: rgba(239, 68, 68, 0.05);">
-        <td style="width: 48px;">
-          <div class="rank-pill" style="background: rgba(239, 68, 68, 0.28); color: #fca5a5; font-weight: 800; font-size: 0.65rem; width: auto; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.4);">${rankIcon}</div>
-        </td>
-        <td>
-          <div class="colab-name" style="color: #fecdd3;">${colab.nome}</div>
-        </td>
-        <td style="width: 70px;">
-          <span class="val-badge" style="background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3);">⚡ ${colab.serv}</span>
-        </td>
-        <td style="width: 70px;">
-          <span class="val-badge" style="background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3);">🔌 ${colab.rlga}</span>
-        </td>
-        <td style="width: 70px;">
-          <span class="val-badge" style="background: #dc2626; color: #ffffff; font-weight: 800; box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);">🔻 ${colab.total}</span>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
-
-function renderizarLeaderboard() {
-  const tbody = document.getElementById('leaderboardBody');
-  if (!tbody) return;
-
-  const cod = AppState.regiaoSelecionada;
-  const dados = cod === 'GERAL' ? AppState.dados.geral : AppState.dados.regionais[cod];
-
-  if (!dados || !dados.top10 || dados.top10.length === 0) {
-    tbody.innerHTML = `
-      <tr class="leaderboard-row">
-        <td colspan="5" style="text-align: center; color: var(--md-text-muted); padding: 10px;">
-          Nenhum colaborador nesta seleção.
-        </td>
-      </tr>
-    `;
-    return;
-  }
-
-  tbody.innerHTML = dados.top10.map(function(colab) {
-    let rankClass = colab.rank === 1 ? 'rank-1' : colab.rank === 2 ? 'rank-2' : colab.rank === 3 ? 'rank-3' : '';
-    let rankIcon = colab.rank === 1 ? '🥇' : colab.rank === 2 ? '🥈' : colab.rank === 3 ? '🥉' : colab.rank;
-
-    return `
-      <tr class="leaderboard-row">
-        <td style="width: 30px;">
-          <div class="rank-pill ${rankClass}">${rankIcon}</div>
-        </td>
-        <td>
-          <div class="colab-name">${colab.nome}</div>
-        </td>
-        <td style="width: 70px;">
-          <span class="val-badge val-serv">⚡ ${colab.serv}</span>
-        </td>
-        <td style="width: 70px;">
-          <span class="val-badge val-rlga">🔌 ${colab.rlga}</span>
-        </td>
-        <td style="width: 70px;">
-          <span class="val-badge val-total">🏆 ${colab.total}</span>
-        </td>
-      </tr>
+      <div class="m-leaderboard-item" style="background: rgba(239, 68, 68, 0.08);">
+        <div class="m-rank-pior">${rankIcon}</div>
+        <div class="m-colab-info">
+          <div class="m-colab-name" style="color: #fecdd3;">${colab.nome}</div>
+          <div class="m-colab-sub" style="color: #fca5a5;">⚡ SERV: ${colab.serv} | 🔌 RLGA: ${colab.rlga}</div>
+        </div>
+        <div class="m-total-badge m-total-badge-pior">🔻 ${colab.total}</div>
+      </div>
     `;
   }).join('');
 }
