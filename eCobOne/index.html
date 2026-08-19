@@ -6,6 +6,15 @@
   <meta name="description" content="eCobOne — Dashboard de Operações e Metas em Tempo Real para TV">
   <title>eCobOne — Dashboard de Operações &amp; Metas</title>
   
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('mode') === 'desktop') return;
+      var ua = (navigator.userAgent || navigator.vendor || window.opera || '').toLowerCase();
+      var isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua) || window.innerWidth <= 768;
+      if (isMobile) { window.location.replace("m/index.html"); }
+    })();
+  </script>
   <!-- Estilos e Fontes -->
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="ecob-one.ico" type="image/x-icon">

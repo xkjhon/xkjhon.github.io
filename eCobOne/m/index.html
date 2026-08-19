@@ -7,6 +7,15 @@
   <meta name="theme-color" content="#08110b">
   <title>eCobOne Mobile — Operações &amp; Metas</title>
   
+  <script>
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('mode') === 'mobile') return;
+      var ua = (navigator.userAgent || navigator.vendor || window.opera || '').toLowerCase();
+      var isDesktop = !/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua) && window.innerWidth > 768;
+      if (isDesktop) { window.location.replace("../index.html"); }
+    })();
+  </script>
   <!-- Estilos Mobile -->
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="../ecob-one.ico" type="image/x-icon">
