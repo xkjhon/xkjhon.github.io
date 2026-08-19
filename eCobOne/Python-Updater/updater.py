@@ -752,12 +752,11 @@ def gerar_dados_txt(caminho_csv=None, log=None):
         f.write(conteudo_final)
 
     try:
-        root_dir = os.path.abspath(os.path.join(BASE, "..", ".."))
+        ecob_dir = os.path.abspath(os.path.join(BASE, ".."))
         folders_to_sync = [
-            os.path.join(root_dir, "Python-Updater", "Files"),
-            os.path.join(root_dir, "eCobOne", "Python-Updater", "Files"),
-            os.path.join(root_dir, "Files"),
-            os.path.join(root_dir, "m", "Files")
+            os.path.join(ecob_dir, "Files"),
+            os.path.join(ecob_dir, "m", "Files"),
+            os.path.join(ecob_dir, "Python-Updater", "Files")
         ]
         for dst_folder in folders_to_sync:
             os.makedirs(dst_folder, exist_ok=True)
