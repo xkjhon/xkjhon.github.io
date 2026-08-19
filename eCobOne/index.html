@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="eCobOne — Dashboard de Operações e Metas em Tempo Real para TV">
+  <title>eCobOne — Dashboard de Operações &amp; Metas</title>
+  
+  <!-- Estilos e Fontes -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.cs">
+  <link rel="shortcut icon" href="ecob-one.ico" type="image/x-icon">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- Header Compacto de TV -->
+    <header class="app-header">
+      <div class="header-brand">
+        <img src="Sprites/logo.png" alt="Logo" class="brand-logo" id="mainLogo">
+        <img src="Sprites/one.png" alt="Mascote" class="brand-robot" id="robotMascot">
+        <div class="brand-titles">
+          <h1>eCobOne</h1>
+          <p><span class="pulse-dot"></span> Monitoramento Operacional &amp; Metas</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="status-badge">
+          <span>AO VIVO</span>
+          <span>•</span>
+          <span id="lastUpdateLabel">--:--:--</span>
+          <span>•</span>
+          <span id="timerLabel">30s</span>
+        </div>
+
+        <button class="btn-refresh btn-fullscreen" id="btnFullscreen" title="Alternar Tela Cheia">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+          Tela Cheia
+        </button>
+
+        <button class="btn-refresh" id="btnRefresh" title="Atualizar Dados Agora">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          Atualizar
+        </button>
+      </div>
+    </header>
+
+    <!-- Chips de Filtro por Região -->
+    <nav class="region-chips-container" id="regionChipsContainer" aria-label="Filtro por Região">
+      <!-- Gerado via code.js -->
+    </nav>
+
+    <!-- 5 Quadros de Métricas Principais (Linha Única) -->
+    <section class="metrics-grid">
+      <article class="metric-card" id="cardServicos">
+        <div class="metric-card-header">
+          <span class="metric-title">Serviços Executados</span>
+          <div class="metric-icon">⚡</div>
+        </div>
+        <div class="metric-value" id="metricServicos">0</div>
+        <div class="metric-sub">SERV (Executados)</div>
+      </article>
+
+      <article class="metric-card" id="cardReligas">
+        <div class="metric-card-header">
+          <span class="metric-title">Religações Concluídas</span>
+          <div class="metric-icon">🔌</div>
+        </div>
+        <div class="metric-value" id="metricReligas">0</div>
+        <div class="metric-sub">RLGA (Restab.)</div>
+      </article>
+
+      <article class="metric-card" id="cardNePago">
+        <div class="metric-card-header">
+          <span class="metric-title">NE / Pago</span>
+          <div class="metric-icon">💳</div>
+        </div>
+        <div class="metric-value" id="metricNePago">0</div>
+        <div class="metric-sub">NEPG (Não Exec./Pago)</div>
+      </article>
+
+      <article class="metric-card" id="cardFaturamento">
+        <div class="metric-card-header">
+          <span class="metric-title">Faturamento NE/Pago</span>
+          <div class="metric-icon">💰</div>
+        </div>
+        <div class="metric-value" id="metricFaturamento">R$ 0,00</div>
+        <div class="metric-sub">FANP (Total Débito)</div>
+      </article>
+
+      <article class="metric-card" id="cardEmCampo">
+        <div class="metric-card-header">
+          <span class="metric-title">Serviços em Campo</span>
+          <div class="metric-icon">📌</div>
+        </div>
+        <div class="metric-value" id="metricEmCampo">0</div>
+        <div class="metric-sub" id="metricTotalExec">0 total exec.</div>
+      </article>
+    </section>
+
+    <!-- Dashboard Principal em 3 Colunas -->
+    <main class="dashboard-grid">
+      
+      <!-- Coluna 1: Quadro de Avisos (Encima) + Metas por Região (Abaixo, Compactas) -->
+      <section class="grid-section column-avisos-metas">
+        
+        <!-- Quadro de Avisos -->
+        <div class="avisos-container">
+          <div class="section-header">
+            <span class="section-icon">📢</span>
+            <h3>Avisos Importantes</h3>
+          </div>
+          <div class="avisos-content" id="avisosContent">
+            <!-- Renderizado via code.js de Avisos.txt -->
+          </div>
+        </div>
+
+        <!-- Quadro Metas por Região (Compacto) -->
+        <div class="metas-regionais-container">
+          <div class="section-header">
+            <span class="section-icon">🎯</span>
+            <h3>Metas por Região</h3>
+          </div>
+          <div class="regional-goals-grid" id="regionalGoalsGrid">
+            <!-- Renderizado via code.js -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Coluna 2: Meta Global & Gráfico Chart.js -->
+      <section class="grid-section">
+        <div class="section-header">
+          <span class="section-icon">📊</span>
+          <h3>Desempenho Geral vs Metas</h3>
+        </div>
+        
+        <div class="global-goal-card">
+          <div class="goal-card-header">
+            <h4 id="metaTitle">Meta Global eCobOne</h4>
+          </div>
+          <div class="percent-display" id="globalPctLabel">0%</div>
+          <div class="goal-progress-bar-bg">
+            <div class="goal-progress-bar-fill" id="globalProgressBar" style="width: 0%"></div>
+          </div>
+          <div class="goal-stats-row" id="globalStatsText">
+            <span><strong>0</strong> Realizados</span>
+            <span>Meta: <strong>0</strong></span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-container">
+            <canvas id="goalsChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Coluna 3: Ranking Top 10 Colaboradores -->
+      <section class="grid-section">
+        <div class="section-header">
+          <span class="section-icon">🏆</span>
+          <h3>Top 10 Colaboradores</h3>
+        </div>
+        <div class="leaderboard-table-wrapper">
+          <table class="leaderboard-table" aria-label="Ranking de Colaboradores">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Colaborador / Equipe</th>
+                <th>SERV</th>
+                <th>RLGA</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <!-- Renderizado via code.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="code.js"></script>
+</body>
+</html>

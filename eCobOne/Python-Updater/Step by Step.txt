@@ -1,0 +1,69 @@
+Lembra de sempre filtrar a data de despacho do dia de hoje
+
+## Quantidade Geral
+
+Quantidade de Serviços: O nome da variavel sera "SERV"
+Filtra "Etapa": "EXECUTADO", Filtra "NomeServico": Tudo menos "VISITA DE LEITURA", "VISITA COMERCIAL GR", "RESTABELECIMENTO FORNEC. AUTOMÁTICO", "RESTABELECIMENTO FORNEC. NORMAL", "RESTABELECIMENTO FORNEC. NORMAL - MUDANÇA TITUL." E visualiza a Contagem de SS
+
+Quantidade de Religas: O nome da variavel sera  "RLGA"
+Filtra "Etapa": "EXECUTADO", Filtra "NomeServico": "RESTABELECIMENTO FORNEC. AUTOMÁTICO", "RESTABELECIMENTO FORNEC. NORMAL", "RESTABELECIMENTO FORNEC. NORMAL - MUDANÇA TITUL." e visualiza a contagem de SS
+
+Quantidade de NE/Pago: O nome da variavel sera "NEPG"
+Filtra "Etapa": "NAO EXECUTADO", Filtra "NomeServico": Tudo menos "VISITA DE LEITURA", "VISITA COMERCIAL GR", Filtra "Mensagem": "NE/PAGO"  E visualiza a Contagem de SS
+
+Faturamento de Ne/Pago: O nome da variavel sera "FANP]
+Filtra "Etapa": "NAO EXECUTADO", Filtra "NomeServico": Tudo menos "VISITA DE LEITURA", "VISITA COMERCIAL GR", Filtra "Mensagem": "NE/PAGO"  E visualiza a Soma de  "Valor Total Debito"
+
+Serviços Colaboradores: O nome da Variavel sera "SERVpC"
+Filtra "Etapa": "EXECUTADO", Filtra "NomeServico": Tudo menos "VISITA DE LEITURA", "VISITA COMERCIAL GR", "RESTABELECIMENTO FORNEC. AUTOMÁTICO", "RESTABELECIMENTO FORNEC. NORMAL", "RESTABELECIMENTO FORNEC. NORMAL - MUDANÇA TITUL." E Liste "Equipe" visualiza a Contagem de SS por Equipe
+
+Religas Colaboradores: O nome da Variavel sera "RLGApC"
+Filtra "Etapa": "EXECUTADO", Filtra "NomeServico": "RESTABELECIMENTO FORNEC. AUTOMÁTICO", "RESTABELECIMENTO FORNEC. NORMAL", "RESTABELECIMENTO FORNEC. NORMAL - MUDANÇA TITUL.", liste "Equipe" e visualiza a contagem de SS por Equipe
+
+Serviços em Campo Colab.: O nome da Variavel sera "SVCApC"
+Filtra "Etapa": "EM CAMPO", Filtra "NomeServico": TUDO, E visualiza a Contagem de SS
+
+*No arquivo dados você ira organizar da seguinte maneira os colaborador: [TOP]; [NOME]; [SERVpC]; [RLGApC] por linha pode filtrar só o top 10 organizado
+
+## Quantidade por Região
+
+### Passo 1: Detectar Região de cada Agencia
+
+04.CSC ANÁPOLIS - 05.CSC JARAGUÁ = ANAPOLIS
+
+06.CSC ÁGUAS LINDAS - 07.CSC LUZIÂNIA = LUZIANIA
+
+08.CSC CAMPOS BELOS - 09.CSC FORMOSA = FORMOSA
+
+11.CSC URUAÇU - 10.CSC PORANGATU = URUACU
+
+16.CSC QUIRINÓPOLIS - 17.CSC RIO VERDE = RIO VERDE
+
+18.CSC  MORRINHOS - 19.CSC CATALÃO  = MORRINHOS
+
+deve ser feito todos os filtros anteriores adicionando a região, na explicação acima: e adicionar a região no final da variável: Segue as variáveis de região
+
+ANAPOLIS = "ANA"
+FORMOSA = "FOR"
+LUZIANIA "LUZ"
+URUAÇU = "URU"
+RIO VERDE = "RVR"
+MORRINHOS = "MNH"
+
+### Organização do Dados.txt
+
+Geral:
+Serviços: [SERV]
+Religas: [RLGA]
+NePago: [NEPG]
+Faturamento: [FANP]
+(Lista de 10 Colab. ([TOP]; [NOME]; [SERVpC]; [RLGApC]))
+
+Região:
+Serviços: [SERV###]
+Religas: [RLGA###]
+NePago: [NEPG###]
+Faturamento: [FANP###]
+(Lista de 10 Colab.([TOP]; [NOME]; [SERVpC]; [RLGApC]))
+
+^^^ repetir por cada regional
