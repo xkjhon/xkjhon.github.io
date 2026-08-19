@@ -1,5 +1,5 @@
 /* =============================================================
-   eCobOne — code.js (Módulo de Dados, Notificações e Renderização)
+   eCobOne — code.js (Módulo de Dados, Notificações e Renderização LG WebOS Ready)
    ============================================================= */
 
 const AppState = {
@@ -34,13 +34,13 @@ const NOME_REGIAO = {
   MNH: 'Morrinhos'
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   iniciarCronometro();
   carregarTudo();
 
   tentarTelaCheia();
 
-  const entrarTelaCheiaPrimeiraInteracao = () => {
+  const entrarTelaCheiaPrimeiraInteracao = function() {
     tentarTelaCheia();
     document.removeEventListener('click', entrarTelaCheiaPrimeiraInteracao);
     document.removeEventListener('keydown', entrarTelaCheiaPrimeiraInteracao);
@@ -79,17 +79,19 @@ function tentarTelaCheia() {
 }
 
 function alternarTelaCheia() {
-  if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
+  try {
+    if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    } else {
+      tentarTelaCheia();
     }
-  } else {
-    tentarTelaCheia();
-  }
+  } catch (err) {}
 }
 
 function iniciarCronometro() {
@@ -98,9 +100,9 @@ function iniciarCronometro() {
   
   const labelTimer = document.getElementById('timerLabel');
   
-  AppState.timerInterval = setInterval(() => {
+  AppState.timerInterval = setInterval(function() {
     AppState.countdownSecs--;
-    if (labelTimer) labelTimer.textContent = `${AppState.countdownSecs}s`;
+    if (labelTimer) labelTimer.textContent = AppState.countdownSecs + 's';
     
     if (AppState.countdownSecs <= 0) {
       carregarTudo();
@@ -127,10 +129,10 @@ function atualizarHorarioAtualizacao() {
     if (AppState.dataAtualizacaoBase) {
       const partes = AppState.dataAtualizacaoBase.split(' ');
       const horaStr = partes.length > 1 ? partes[1] : AppState.dataAtualizacaoBase;
-      elem.textContent = `Base: ${horaStr}`;
+      elem.textContent = 'Base: ' + horaStr;
     } else {
       const agora = new Date();
-      elem.textContent = `Base: ${agora.toLocaleTimeString('pt-BR')}`;
+      elem.textContent = 'Base: ' + agora.toLocaleTimeString('pt-BR');
     }
   }
 }
@@ -147,10 +149,10 @@ async function carregarAvisos() {
 
   for (const path of rotas) {
     try {
-      const res = await fetch(`${path}?t=${Date.now()}`);
+      const res = await fetch(path + '?t=' + Date.now());
       if (res.ok) {
         const texto = await res.text();
-        AppState.avisos = texto.split('\n').map(l => l.trim()).filter(l => l);
+        AppState.avisos = texto.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l; });
         return;
       }
     } catch (e) {}
@@ -167,10 +169,12 @@ function renderizarAvisos() {
   const temAlertas = alertas.length > 0;
 
   // Alterna o Tema Amarelo da página inteira se houver religa em alerta
-  document.body.classList.toggle('theme-alert-yellow', temAlertas);
+  if (document.body && document.body.classList) {
+    document.body.classList.toggle('theme-alert-yellow', temAlertas);
+  }
 
   if (temAlertas) {
-    container.innerHTML = alertas.map(item => {
+    container.innerHTML = alertas.map(function(item) {
       return `
         <div class="aviso-alert-card">
           <div class="alert-card-header">
@@ -189,7 +193,6 @@ function renderizarAvisos() {
     return;
   }
 
-  // Se não houver alertas de religa, exibe o estado de notificações limpo
   container.innerHTML = `
     <div class="aviso-item" style="color: var(--md-text-muted); justify-content: center; padding: 16px 0;">
       <span class="aviso-bullet">🔔</span>
@@ -210,11 +213,11 @@ async function carregarMetas() {
 
   for (const path of rotas) {
     try {
-      const res = await fetch(`${path}?t=${Date.now()}`);
+      const res = await fetch(path + '?t=' + Date.now());
       if (res.ok) {
         const texto = await res.text();
         const linhas = texto.split('\n');
-        linhas.forEach(linha => {
+        linhas.forEach(function(linha) {
           const p = linha.trim().split(':');
           if (p.length === 2) {
             const cod = p[0].trim().toUpperCase();
@@ -244,7 +247,7 @@ async function carregarDados() {
 
   for (const path of rotas) {
     try {
-      const res = await fetch(`${path}?t=${Date.now()}`);
+      const res = await fetch(path + '?t=' + Date.now());
       if (res.ok) {
         const texto = await res.text();
         parsearDadosTxt(texto);
@@ -266,20 +269,20 @@ function parsearDadosTxt(texto) {
   AppState.dados.regionais = {};
   AppState.dados.alertas = [];
 
-  blocos.forEach(blocoTexto => {
-    const linhas = blocoTexto.split('\n').map(l => l.trim()).filter(l => l);
+  blocos.forEach(function(blocoTexto) {
+    const linhas = blocoTexto.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l; });
     if (linhas.length === 0) return;
 
     const cabecalho = linhas[0];
 
-    if (cabecalho.toLowerCase().startsWith('atualizacao:')) {
+    if (cabecalho.toLowerCase().indexOf('atualizacao:') === 0) {
       const val = cabecalho.replace(/^atualizacao:\s*/i, '').trim();
       AppState.dataAtualizacaoBase = val;
       return;
     }
 
-    if (cabecalho.toLowerCase().startsWith('alertas:')) {
-      linhas.slice(1).forEach(linha => {
+    if (cabecalho.toLowerCase().indexOf('alertas:') === 0) {
+      linhas.slice(1).forEach(function(linha) {
         if (linha !== '0') {
           const partes = linha.split(';');
           if (partes.length >= 2) {
@@ -305,16 +308,16 @@ function parsearDadosTxt(texto) {
       top10: []
     };
 
-    linhas.slice(1).forEach(linha => {
-      if (linha.startsWith('Serviços:')) {
+    linhas.slice(1).forEach(function(linha) {
+      if (linha.indexOf('Serviços:') === 0) {
         itemDados.servicos = parseInt(linha.replace('Serviços:', '').trim(), 10) || 0;
-      } else if (linha.startsWith('Religas:')) {
+      } else if (linha.indexOf('Religas:') === 0) {
         itemDados.religas = parseInt(linha.replace('Religas:', '').trim(), 10) || 0;
-      } else if (linha.startsWith('NePago:')) {
+      } else if (linha.indexOf('NePago:') === 0) {
         itemDados.nePago = parseInt(linha.replace('NePago:', '').trim(), 10) || 0;
-      } else if (linha.startsWith('Faturamento:')) {
+      } else if (linha.indexOf('Faturamento:') === 0) {
         itemDados.faturamento = linha.replace('Faturamento:', '').trim();
-      } else if (linha.startsWith('EmCampo:')) {
+      } else if (linha.indexOf('EmCampo:') === 0) {
         itemDados.emCampo = parseInt(linha.replace('EmCampo:', '').trim(), 10) || 0;
       } else if (/^\d+;/.test(linha)) {
         const partes = linha.split(';');
@@ -330,16 +333,16 @@ function parsearDadosTxt(texto) {
       }
     });
 
-    if (cabecalho.toLowerCase().startsWith('geral:')) {
+    if (cabecalho.toLowerCase().indexOf('geral:') === 0) {
       AppState.dados.geral = itemDados;
-    } else if (cabecalho.toLowerCase().startsWith('região:')) {
+    } else if (cabecalho.toLowerCase().indexOf('região:') === 0) {
       let cod = 'OUT';
-      if (cabecalho.includes('(ANA)')) cod = 'ANA';
-      else if (cabecalho.includes('(LUZ)')) cod = 'LUZ';
-      else if (cabecalho.includes('(FOR)')) cod = 'FOR';
-      else if (cabecalho.includes('(URU)')) cod = 'URU';
-      else if (cabecalho.includes('(RVR)')) cod = 'RVR';
-      else if (cabecalho.includes('(MNH)')) cod = 'MNH';
+      if (cabecalho.indexOf('(ANA)') !== -1) cod = 'ANA';
+      else if (cabecalho.indexOf('(LUZ)') !== -1) cod = 'LUZ';
+      else if (cabecalho.indexOf('(FOR)') !== -1) cod = 'FOR';
+      else if (cabecalho.indexOf('(URU)') !== -1) cod = 'URU';
+      else if (cabecalho.indexOf('(RVR)') !== -1) cod = 'RVR';
+      else if (cabecalho.indexOf('(MNH)') !== -1) cod = 'MNH';
 
       AppState.dados.regionais[cod] = itemDados;
     }
@@ -394,7 +397,7 @@ function renderizarChipsFiltro() {
 
   const regioes = ['GERAL', 'ANA', 'LUZ', 'FOR', 'URU', 'RVR', 'MNH'];
 
-  container.innerHTML = regioes.map(cod => {
+  container.innerHTML = regioes.map(function(cod) {
     const isActive = AppState.regiaoSelecionada === cod;
     const rotulo = cod === 'GERAL' ? '🌐 Todas (Geral)' : NOME_REGIAO[cod];
     const tagMeta = cod !== 'GERAL' && AppState.metas[cod] ? `<span class="chip-tag">Meta ${AppState.metas[cod]}</span>` : '';
@@ -420,7 +423,7 @@ function renderizarQuadrosMetricas() {
 
   const totalExecutado = dados.servicos + dados.religas;
 
-  const setVal = (id, val) => {
+  const setVal = function(id, val) {
     const el = document.getElementById(id);
     if (el) el.textContent = val;
   };
@@ -440,7 +443,11 @@ function renderizarMetasEGrafico() {
   let realizadoAlvo = 0;
 
   if (cod === 'GERAL') {
-    metaAlvo = Object.values(AppState.metas).reduce((a, b) => a + b, 0);
+    const vals = [];
+    for (const key in AppState.metas) {
+      vals.push(AppState.metas[key]);
+    }
+    metaAlvo = vals.reduce(function(a, b) { return a + b; }, 0);
     const g = AppState.dados.geral;
     realizadoAlvo = g ? g.servicos : 0;
   } else {
@@ -468,7 +475,7 @@ function renderizarMetasEGrafico() {
   const containerReg = document.getElementById('regionalGoalsGrid');
   if (containerReg) {
     const codigosReg = ['ANA', 'LUZ', 'FOR', 'URU', 'RVR', 'MNH'];
-    containerReg.innerHTML = codigosReg.map(c => {
+    containerReg.innerHTML = codigosReg.map(function(c) {
       const meta = AppState.metas[c] || 0;
       const d = AppState.dados.regionais[c];
       const real = d ? d.servicos : 0;
@@ -502,14 +509,14 @@ function renderizarChartJs() {
   if (!canvas || typeof Chart === 'undefined') return;
 
   const codigos = ['ANA', 'LUZ', 'FOR', 'URU', 'RVR', 'MNH'];
-  const labels = codigos.map(c => NOME_REGIAO[c]);
-  const metasData = codigos.map(c => AppState.metas[c] || 0);
-  const realizadosData = codigos.map(c => {
+  const labels = codigos.map(function(c) { return NOME_REGIAO[c]; });
+  const metasData = codigos.map(function(c) { return AppState.metas[c] || 0; });
+  const realizadosData = codigos.map(function(c) {
     const d = AppState.dados.regionais[c];
     return d ? d.servicos : 0;
   });
 
-  const isYellow = document.body.classList.contains('theme-alert-yellow');
+  const isYellow = document.body && document.body.classList && document.body.classList.contains('theme-alert-yellow');
   const barColor = isYellow ? '#f59e0b' : '#10b981';
   const barBorder = isYellow ? '#d97706' : '#059669';
   const labelColor = isYellow ? '#fde68a' : '#a7f3d0';
@@ -545,6 +552,7 @@ function renderizarChartJs() {
       ]
     },
     options: {
+      animation: { duration: 400 },
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -564,7 +572,7 @@ function renderizarChartJs() {
         },
         y: {
           ticks: { color: labelColor, font: { size: 8 } },
-          grid: { color: 'rgba(245, 158, 11, 0.15)' }
+          grid: { color: isYellow ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)' }
         }
       }
     }
@@ -589,7 +597,7 @@ function renderizarLeaderboard() {
     return;
   }
 
-  tbody.innerHTML = dados.top10.map(colab => {
+  tbody.innerHTML = dados.top10.map(function(colab) {
     let rankClass = colab.rank === 1 ? 'rank-1' : colab.rank === 2 ? 'rank-2' : colab.rank === 3 ? 'rank-3' : '';
     let rankIcon = colab.rank === 1 ? '🥇' : colab.rank === 2 ? '🥈' : colab.rank === 3 ? '🥉' : colab.rank;
 
