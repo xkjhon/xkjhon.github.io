@@ -739,7 +739,17 @@ def gerar_dados_txt(caminho_csv=None, log=None):
     with open(DADOS_TXT, "w", encoding="utf-8") as f:
         f.write(conteudo_final)
 
-    log.info(f"✓ dados.txt gerado com sucesso em Files/dados.txt! ({len(linhas_txt)} linhas)")
+    try:
+        root_dir = os.path.abspath(os.path.join(BASE, "..", ".."))
+        target_files_dir = os.path.join(root_dir, "Python-Updater", "Files")
+        os.makedirs(target_files_dir, exist_ok=True)
+        shutil.copy2(DADOS_TXT, os.path.join(target_files_dir, "dados.txt"))
+    except Exception as e_sync:
+        if log:
+            log.warning(f"Aviso ao sincronizar dados.txt: {e_sync}")
+
+    if log:
+        log.info(f"✓ dados.txt gerado com sucesso em Files/dados.txt! ({len(linhas_txt)} linhas)")
     return DADOS_TXT
 
 
