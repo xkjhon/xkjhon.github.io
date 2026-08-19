@@ -94,7 +94,6 @@ body.theme-alert-yellow {
   gap: 8px;
 }
 
-/* Header Principal */
 .app-header {
   background: var(--md-sys-color-surface);
   border: 1px solid var(--md-sys-color-outline);
@@ -363,7 +362,6 @@ body.theme-alert-yellow .pulse-dot {
   min-height: 0;
 }
 
-/* Quadro de Avisos (Notificações) */
 .avisos-container {
   flex: 1;
   min-height: 0;
@@ -386,7 +384,6 @@ body.theme-alert-yellow .pulse-dot {
   padding-right: 3px;
 }
 
-/* Sub-Quadro Grande de Alerta em Destaque */
 .aviso-alert-card {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.28) 0%, rgba(217, 119, 6, 0.38) 100%);
   border: 2px solid #f59e0b;

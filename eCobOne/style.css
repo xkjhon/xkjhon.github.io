@@ -88,10 +88,10 @@ body.theme-alert-yellow {
 .app-container {
   width: 100%;
   height: 100vh;
-  padding: 10px 14px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 /* Header Principal */
@@ -99,7 +99,7 @@ body.theme-alert-yellow {
   background: var(--md-sys-color-surface);
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--radius-lg);
-  padding: 6px 18px;
+  padding: 4px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -107,7 +107,7 @@ body.theme-alert-yellow {
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
-  height: 52px;
+  height: 46px;
 }
 
 .app-header::before {
@@ -130,17 +130,17 @@ body.theme-alert-yellow {
 .header-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .brand-logo {
-  height: 32px;
+  height: 28px;
   width: auto;
   object-fit: contain;
 }
 
 .brand-robot {
-  height: 36px;
+  height: 32px;
   width: auto;
   object-fit: contain;
   animation: floatRobot 3.5s ease-in-out infinite;
@@ -153,7 +153,7 @@ body.theme-alert-yellow {
 
 .brand-titles h1 {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: -0.5px;
   background: linear-gradient(135deg, #ffffff 30%, var(--md-text-medium) 100%);
@@ -163,14 +163,14 @@ body.theme-alert-yellow {
 }
 
 .brand-titles p {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--md-text-medium);
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   line-height: 1;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .pulse-dot {
@@ -196,33 +196,33 @@ body.theme-alert-yellow .pulse-dot {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .status-badge {
   background: var(--md-sys-color-surface-variant);
   border: 1px solid var(--md-sys-color-outline-variant);
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--md-text-medium);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .btn-refresh {
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
   border: none;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: var(--radius-full);
   font-weight: 700;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   transition: all 0.2s ease;
 }
 
@@ -244,25 +244,25 @@ body.theme-alert-yellow .pulse-dot {
 .region-chips-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
-  height: 32px;
+  height: 28px;
 }
 
 .chip {
   background: var(--md-sys-color-surface);
   border: 1px solid var(--md-sys-color-outline-variant);
   color: var(--md-text-medium);
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .chip.active {
@@ -274,24 +274,24 @@ body.theme-alert-yellow .pulse-dot {
 
 .chip-tag {
   background: rgba(255, 255, 255, 0.1);
-  padding: 1px 5px;
-  border-radius: 6px;
-  font-size: 0.68rem;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 0.65rem;
 }
 
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
-  height: 80px;
+  height: 72px;
 }
 
 .metric-card {
   background: var(--md-sys-color-surface);
   border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: var(--radius-md);
-  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -305,35 +305,35 @@ body.theme-alert-yellow .pulse-dot {
 }
 
 .metric-title {
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   font-weight: 700;
   color: var(--md-text-medium);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
 .metric-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: var(--radius-xs);
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
 }
 
 .metric-value {
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: var(--md-text-high);
-  line-height: 1.1;
+  line-height: 1;
 }
 
 .metric-sub {
-  font-size: 0.68rem;
+  font-size: 0.64rem;
   color: var(--md-text-muted);
 }
 
@@ -342,24 +342,24 @@ body.theme-alert-yellow .pulse-dot {
   min-height: 0;
   display: grid;
   grid-template-columns: 1.1fr 1.1fr 1.1fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .grid-section {
   background: var(--md-sys-color-surface);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: var(--radius-md);
-  padding: 10px 12px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-height: 0;
 }
 
 .column-avisos-metas {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-height: 0;
 }
 
@@ -370,10 +370,10 @@ body.theme-alert-yellow .pulse-dot {
   background: var(--md-sys-color-surface-variant);
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .avisos-content {
@@ -381,9 +381,9 @@ body.theme-alert-yellow .pulse-dot {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 3px;
 }
 
 /* Sub-Quadro Grande de Alerta em Destaque */
@@ -391,17 +391,17 @@ body.theme-alert-yellow .pulse-dot {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.28) 0%, rgba(217, 119, 6, 0.38) 100%);
   border: 2px solid #f59e0b;
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+  gap: 3px;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
   animation: alertPulse 1.8s infinite alternate;
 }
 
 @keyframes alertPulse {
-  0% { border-color: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
-  100% { border-color: #fde047; box-shadow: 0 0 24px rgba(253, 224, 71, 0.7); }
+  0% { border-color: #f59e0b; box-shadow: 0 0 8px rgba(245, 158, 11, 0.3); }
+  100% { border-color: #fde047; box-shadow: 0 0 20px rgba(253, 224, 71, 0.6); }
 }
 
 .alert-card-header {
@@ -414,32 +414,32 @@ body.theme-alert-yellow .pulse-dot {
   background: #f59e0b;
   color: #451a03;
   font-weight: 800;
-  font-size: 0.65rem;
-  padding: 2px 8px;
+  font-size: 0.62rem;
+  padding: 2px 6px;
   border-radius: var(--radius-full);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
 }
 
 .alert-ss-title {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 800;
   color: #fef08a;
 }
 
 .alert-colab-text {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: #fffbeb;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .alert-footer-action {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: #fde047;
   text-transform: uppercase;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .metas-regionais-container {
@@ -447,7 +447,7 @@ body.theme-alert-yellow .pulse-dot {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .regional-goals-grid {
@@ -456,17 +456,17 @@ body.theme-alert-yellow .pulse-dot {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 6px;
+  gap: 5px;
 }
 
 .regional-card {
   background: var(--md-sys-color-surface-variant);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: var(--radius-xs);
-  padding: 6px 8px;
+  padding: 5px 7px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .regional-card-top {
@@ -477,29 +477,30 @@ body.theme-alert-yellow .pulse-dot {
 
 .regional-name {
   font-weight: 700;
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   color: var(--md-text-high);
 }
 
 .regional-badge {
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-tertiary);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  padding: 1px 5px;
+  padding: 1px 4px;
   border-radius: var(--radius-full);
 }
 
 .regional-progress-val {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--md-text-medium);
   display: flex;
   justify-content: space-between;
+  margin: 1px 0;
 }
 
 .regional-bar-bg {
   width: 100%;
-  height: 5px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-full);
   overflow: hidden;
@@ -515,19 +516,19 @@ body.theme-alert-yellow .pulse-dot {
 .section-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding-bottom: 4px;
+  gap: 5px;
+  padding-bottom: 3px;
   border-bottom: 1px solid var(--md-sys-color-outline-variant);
   flex-shrink: 0;
 }
 
 .section-icon {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .section-header h3 {
   font-family: var(--font-display);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--md-text-high);
 }
@@ -536,34 +537,34 @@ body.theme-alert-yellow .pulse-dot {
   background: var(--md-sys-color-surface-variant);
   border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
+  padding: 6px 8px;
   flex-shrink: 0;
 }
 
 .goal-card-header h4 {
   font-family: var(--font-display);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--md-text-high);
 }
 
 .percent-display {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 800;
   color: var(--md-sys-color-secondary);
   text-align: center;
   line-height: 1;
-  margin: 2px 0;
+  margin: 1px 0;
 }
 
 .goal-progress-bar-bg {
   width: 100%;
-  height: 7px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-full);
   overflow: hidden;
-  margin: 3px 0;
+  margin: 2px 0;
 }
 
 .goal-progress-bar-fill {
@@ -576,7 +577,7 @@ body.theme-alert-yellow .pulse-dot {
 .goal-stats-row {
   display: flex;
   justify-content: space-between;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--md-text-medium);
   font-weight: 600;
 }
@@ -606,16 +607,16 @@ body.theme-alert-yellow .pulse-dot {
   width: 100%;
   height: 100%;
   border-collapse: separate;
-  border-spacing: 0 4px;
+  border-spacing: 0 2px;
 }
 
 .leaderboard-table th {
   text-align: left;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--md-text-muted);
   text-transform: uppercase;
-  padding: 0 4px 4px 4px;
+  padding: 0 3px 3px 3px;
 }
 
 .leaderboard-row {
@@ -623,8 +624,8 @@ body.theme-alert-yellow .pulse-dot {
 }
 
 .leaderboard-row td {
-  padding: 4px 6px;
-  font-size: 0.75rem;
+  padding: 3px 5px;
+  font-size: 0.72rem;
 }
 
 .leaderboard-row td:first-child {
@@ -638,14 +639,14 @@ body.theme-alert-yellow .pulse-dot {
 }
 
 .rank-pill {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   background: rgba(255, 255, 255, 0.08);
   color: var(--md-text-high);
 }
@@ -670,15 +671,15 @@ body.theme-alert-yellow .pulse-dot {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 170px;
+  max-width: 160px;
   color: var(--md-text-high);
 }
 
 .val-badge {
   display: inline-block;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: var(--radius-full);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
 }
 
