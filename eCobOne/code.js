@@ -236,7 +236,9 @@ async function carregarMetas() {
 async function carregarDados() {
   const rotas = [
     './Python-Updater/Files/dados.txt',
+    '../Python-Updater/Files/dados.txt',
     './Files/dados.txt',
+    '../Files/dados.txt',
     'dados.txt'
   ];
 
