@@ -731,6 +731,9 @@ def gerar_dados_txt(caminho_csv=None, log=None):
         linhas_txt.append(f"EmCampo: {svcapc_r}")
         for idx, (colab, s_c, r_c, _) in enumerate(top10_r, start=1):
             linhas_txt.append(f"{idx};{colab};{s_c};{r_c}")
+        linhas_txt.append("Piores:")
+        for idx, (colab, s_c, r_c, _) in enumerate(bottom10_r, start=1):
+            linhas_txt.append(f"{idx};{colab};{s_c};{r_c}")
 
     conteudo_final = "\n".join(linhas_txt) + "\n"
     with open(DADOS_TXT, "w", encoding="utf-8") as f:

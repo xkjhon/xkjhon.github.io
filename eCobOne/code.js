@@ -633,21 +633,21 @@ function renderizarLeaderboardPiores() {
     const rankIcon = `🔻 ${rankNum}º`;
 
     return `
-      <tr class="leaderboard-row">
-        <td style="width: 45px;">
-          <div class="rank-pill" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; font-size: 0.62rem; width: auto; padding: 2px 5px; border-radius: 4px;">${rankIcon}</div>
+      <tr class="leaderboard-row" style="background: rgba(239, 68, 68, 0.05);">
+        <td style="width: 48px;">
+          <div class="rank-pill" style="background: rgba(239, 68, 68, 0.28); color: #fca5a5; font-weight: 800; font-size: 0.65rem; width: auto; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.4);">${rankIcon}</div>
         </td>
         <td>
-          <div class="colab-name">${colab.nome}</div>
+          <div class="colab-name" style="color: #fecdd3;">${colab.nome}</div>
         </td>
         <td style="width: 70px;">
-          <span class="val-badge val-serv">⚡ ${colab.serv}</span>
+          <span class="val-badge" style="background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3);">⚡ ${colab.serv}</span>
         </td>
         <td style="width: 70px;">
-          <span class="val-badge val-rlga">🔌 ${colab.rlga}</span>
+          <span class="val-badge" style="background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3);">🔌 ${colab.rlga}</span>
         </td>
         <td style="width: 70px;">
-          <span class="val-badge" style="background: rgba(239, 68, 68, 0.18); color: #fca5a5;">🏆 ${colab.total}</span>
+          <span class="val-badge" style="background: #dc2626; color: #ffffff; font-weight: 800; box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);">🔻 ${colab.total}</span>
         </td>
       </tr>
     `;

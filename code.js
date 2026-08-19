@@ -195,7 +195,7 @@ function renderizarAvisos() {
   }
 
   container.innerHTML = `
-    <div class="aviso-item" style="color: var(--md-text-muted); padding: 2px 0; font-size: 0.72rem; display: flex; align-items: center; gap: 6px;">
+    <div class="aviso-item" style="color: var(--md-text-muted); padding: 4px 0; font-size: 0.76rem; display: flex; align-items: center; gap: 6px;">
       <span class="aviso-bullet">🔔</span>
       <span>Nenhuma notificação ou alerta no momento.</span>
     </div>
@@ -613,9 +613,12 @@ function renderizarLeaderboardPiores() {
   const cod = AppState.regiaoSelecionada;
   const dados = cod === 'GERAL' ? AppState.dados.geral : AppState.dados.regionais[cod];
 
-  const piores = (dados && dados.bottom10 && dados.bottom10.length > 0) 
-    ? dados.bottom10 
-    : (dados && dados.top10 ? dados.top10.slice().sort(function(a, b) { return a.total - b.total; }) : []);
+  let piores = [];
+  if (dados && dados.bottom10 && dados.bottom10.length > 0) {
+    piores = dados.bottom10;
+  } else if (dados && dados.top10) {
+    piores = dados.top10.slice().sort(function(a, b) { return a.total - b.total; });
+  }
 
   if (!piores || piores.length === 0) {
     tbody.innerHTML = `
@@ -633,21 +636,21 @@ function renderizarLeaderboardPiores() {
     const rankIcon = `🔻 ${rankNum}º`;
 
     return `
-      <tr class="leaderboard-row">
-        <td style="width: 45px;">
-          <div class="rank-pill" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; font-size: 0.62rem; width: auto; padding: 2px 5px; border-radius: 4px;">${rankIcon}</div>
+      <tr class="leaderboard-row" style="background: rgba(239, 68, 68, 0.05);">
+        <td style="width: 48px;">
+          <div class="rank-pill" style="background: rgba(239, 68, 68, 0.28); color: #fca5a5; font-weight: 800; font-size: 0.65rem; width: auto; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.4);">${rankIcon}</div>
         </td>
         <td>
-          <div class="colab-name">${colab.nome}</div>
+          <div class="colab-name" style="color: #fecdd3;">${colab.nome}</div>
         </td>
         <td style="width: 70px;">
-          <span class="val-badge val-serv">⚡ ${colab.serv}</span>
+          <span class="val-badge" style="background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3);">⚡ ${colab.serv}</span>
         </td>
         <td style="width: 70px;">
-          <span class="val-badge val-rlga">🔌 ${colab.rlga}</span>
+          <span class="val-badge" style="background: rgba(239, 68, 68, 0.18); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3);">🔌 ${colab.rlga}</span>
         </td>
         <td style="width: 70px;">
-          <span class="val-badge" style="background: rgba(239, 68, 68, 0.18); color: #fca5a5;">🏆 ${colab.total}</span>
+          <span class="val-badge" style="background: #dc2626; color: #ffffff; font-weight: 800; box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);">🔻 ${colab.total}</span>
         </td>
       </tr>
     `;
