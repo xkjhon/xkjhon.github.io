@@ -111,69 +111,82 @@
     <!-- Dashboard Principal em 3 Colunas -->
     <main class="dashboard-grid">
       
-      <!-- Coluna 1: Quadro de Avisos (Encima) + Metas por Região (Abaixo, Compactas) -->
-      <section class="grid-section column-avisos-metas">
+      <!-- Coluna 1: Avisos Importantes (Compacto) + Desempenho Geral vs Metas (Gráfico) -->
+      <section class="grid-section">
         
-        <!-- Quadro de Avisos -->
-        <div class="avisos-container">
+        <!-- Avisos Importantes (Tamanho de Notificação) -->
+        <div class="avisos-container compact-avisos">
           <div class="section-header">
             <span class="section-icon">📢</span>
             <h3>Avisos Importantes</h3>
           </div>
           <div class="avisos-content" id="avisosContent">
-            <!-- Renderizado via code.js de Avisos.txt -->
-          </div>
-        </div>
-
-        <!-- Quadro Metas por Região (Compacto) -->
-        <div class="metas-regionais-container">
-          <div class="section-header">
-            <span class="section-icon">🎯</span>
-            <h3>Metas por Região</h3>
-          </div>
-          <div class="regional-goals-grid" id="regionalGoalsGrid">
             <!-- Renderizado via code.js -->
           </div>
         </div>
 
+        <!-- Meta Global & Gráfico Chart.js -->
+        <div class="desempenho-geral-container">
+          <div class="section-header">
+            <span class="section-icon">📊</span>
+            <h3>Desempenho Geral vs Metas</h3>
+          </div>
+          
+          <div class="global-goal-card">
+            <div class="goal-card-header">
+              <h4 id="metaTitle">Meta Global eCobOne</h4>
+            </div>
+            <div class="percent-display" id="globalPctLabel">0%</div>
+            <div class="goal-progress-bar-bg">
+              <div class="goal-progress-bar-fill" id="globalProgressBar" style="width: 0%"></div>
+            </div>
+            <div class="goal-stats-row" id="globalStatsText">
+              <span><strong>0</strong> Realizados</span>
+              <span>Meta: <strong>0</strong></span>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-container">
+              <canvas id="goalsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
       </section>
 
-      <!-- Coluna 2: Meta Global & Gráfico Chart.js -->
+      <!-- Coluna 2: TOP 10 Piores Colaboradores (Menores Produções) -->
       <section class="grid-section">
         <div class="section-header">
-          <span class="section-icon">📊</span>
-          <h3>Desempenho Geral vs Metas</h3>
+          <span class="section-icon">🔻</span>
+          <h3>TOP 10 Menores Produções</h3>
         </div>
-        
-        <div class="global-goal-card">
-          <div class="goal-card-header">
-            <h4 id="metaTitle">Meta Global eCobOne</h4>
-          </div>
-          <div class="percent-display" id="globalPctLabel">0%</div>
-          <div class="goal-progress-bar-bg">
-            <div class="goal-progress-bar-fill" id="globalProgressBar" style="width: 0%"></div>
-          </div>
-          <div class="goal-stats-row" id="globalStatsText">
-            <span><strong>0</strong> Realizados</span>
-            <span>Meta: <strong>0</strong></span>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-container">
-            <canvas id="goalsChart"></canvas>
-          </div>
+        <div class="leaderboard-table-wrapper">
+          <table class="leaderboard-table" aria-label="Ranking Piores Colaboradores">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Colaborador / Equipe</th>
+                <th>SERV</th>
+                <th>RLGA</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardPioresBody">
+              <!-- Renderizado via code.js -->
+            </tbody>
+          </table>
         </div>
       </section>
 
-      <!-- Coluna 3: Ranking Top 10 Colaboradores -->
+      <!-- Coluna 3: TOP 10 Melhores Colaboradores (Maiores Produções) -->
       <section class="grid-section">
         <div class="section-header">
           <span class="section-icon">🏆</span>
-          <h3>Top 10 Colaboradores</h3>
+          <h3>TOP 10 Maiores Produções</h3>
         </div>
         <div class="leaderboard-table-wrapper">
-          <table class="leaderboard-table" aria-label="Ranking de Colaboradores">
+          <table class="leaderboard-table" aria-label="Ranking Melhores Colaboradores">
             <thead>
               <tr>
                 <th>#</th>
@@ -191,6 +204,17 @@
       </section>
 
     </main>
+
+    <!-- Parte de Baixo: Metas por Região em 1 Linha Única (6 Colunas) -->
+    <footer class="metas-regionais-bottom-bar">
+      <div class="section-header">
+        <span class="section-icon">🎯</span>
+        <h3>Metas por Região</h3>
+      </div>
+      <div class="regional-goals-grid-row" id="regionalGoalsGrid">
+        <!-- Renderizado via code.js em 1 linha -->
+      </div>
+    </footer>
 
   </div>
 

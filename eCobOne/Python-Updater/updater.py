@@ -646,7 +646,10 @@ def gerar_dados_txt(caminho_csv=None, log=None):
         ranking.sort(key=lambda x: (x[3], x[1], x[2]), reverse=True)
         top10 = ranking[:10]
 
-        return serv_cnt, rlga_cnt, nepg_cnt, fanp_val, svcapc_cnt, top10
+        ranking_piores = sorted(ranking, key=lambda x: (x[3], x[1], x[2]))
+        bottom10 = ranking_piores[:10]
+
+        return serv_cnt, rlga_cnt, nepg_cnt, fanp_val, svcapc_cnt, top10, bottom10
 
     # Detecção de Religas / Restabelecimentos "ALERTA"
     etapa_raw = df_hoje["Etapa"].fillna("").astype(str).str.strip().str.upper() if "Etapa" in df_hoje.columns else pd.Series(dtype=str)
@@ -702,7 +705,7 @@ def gerar_dados_txt(caminho_csv=None, log=None):
     linhas_txt.append("")
 
     # Bloco Geral
-    serv, rlga, nepg, fanp, svcapc, top10 = calc_metricas_bloco(df_hoje)
+    serv, rlga, nepg, fanp, svcapc, top10, bottom10 = calc_metricas_bloco(df_hoje)
     linhas_txt.append("Geral:")
     linhas_txt.append(f"Serviços: {serv}")
     linhas_txt.append(f"Religas: {rlga}")
@@ -711,11 +714,14 @@ def gerar_dados_txt(caminho_csv=None, log=None):
     linhas_txt.append(f"EmCampo: {svcapc}")
     for idx, (colab, s_c, r_c, _) in enumerate(top10, start=1):
         linhas_txt.append(f"{idx};{colab};{s_c};{r_c}")
+    linhas_txt.append("Piores:")
+    for idx, (colab, s_c, r_c, _) in enumerate(bottom10, start=1):
+        linhas_txt.append(f"{idx};{colab};{s_c};{r_c}")
 
     # Bloco por Região
     for reg_nome, reg_cod, _ in REGIOES_CONFIG:
         sub_reg = df_hoje[df_hoje["Regiao_Cod"] == reg_cod]
-        serv_r, rlga_r, nepg_r, fanp_r, svcapc_r, top10_r = calc_metricas_bloco(sub_reg)
+        serv_r, rlga_r, nepg_r, fanp_r, svcapc_r, top10_r, bottom10_r = calc_metricas_bloco(sub_reg)
         linhas_txt.append("")
         linhas_txt.append(f"Região: {reg_nome} ({reg_cod})")
         linhas_txt.append(f"Serviços: {serv_r}")
