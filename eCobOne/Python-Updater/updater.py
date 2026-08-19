@@ -739,6 +739,28 @@ def gerar_dados_txt(caminho_csv=None, log=None):
     with open(DADOS_TXT, "w", encoding="utf-8") as f:
         f.write(conteudo_final)
 
+    try:
+        root_dir = os.path.abspath(os.path.join(BASE, "..", ".."))
+        folders_to_sync = [
+            os.path.join(root_dir, "Python-Updater", "Files"),
+            os.path.join(root_dir, "eCobOne", "Python-Updater", "Files"),
+            os.path.join(root_dir, "Files"),
+            os.path.join(root_dir, "m", "Files")
+        ]
+        for dst_folder in folders_to_sync:
+            os.makedirs(dst_folder, exist_ok=True)
+            for fname in ["dados.txt", "Avisos.txt", "Metas.txt"]:
+                src_path = os.path.join(FILES_DIR, fname)
+                dst_path = os.path.join(dst_folder, fname)
+                if os.path.exists(src_path) and os.path.abspath(src_path) != os.path.abspath(dst_path):
+                    try:
+                        shutil.copyfile(src_path, dst_path)
+                    except Exception:
+                        pass
+    except Exception as e_sync:
+        if log:
+            log.warning(f"Aviso ao sincronizar arquivos de dados: {e_sync}")
+
     log.info(f"✓ dados.txt gerado com sucesso em Files/dados.txt! ({len(linhas_txt)} linhas)")
     return DADOS_TXT
 

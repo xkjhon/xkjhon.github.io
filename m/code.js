@@ -113,8 +113,8 @@ function atualizarHorarioAtualizacao() {
 // -------------------------------------------------------------
 async function carregarAvisos() {
   const rotas = [
-    '../Python-Updater/Files/Avisos.txt',
     '../eCobOne/Python-Updater/Files/Avisos.txt',
+    '../Python-Updater/Files/Avisos.txt',
     '../Files/Avisos.txt',
     './Files/Avisos.txt',
     'Avisos.txt'
@@ -136,8 +136,8 @@ async function carregarAvisos() {
 
 async function carregarMetas() {
   const rotas = [
-    '../Python-Updater/Files/Metas.txt',
     '../eCobOne/Python-Updater/Files/Metas.txt',
+    '../Python-Updater/Files/Metas.txt',
     '../Files/Metas.txt',
     './Files/Metas.txt',
     'Metas.txt'
@@ -167,8 +167,8 @@ async function carregarMetas() {
 
 async function carregarDados() {
   const rotas = [
-    '../Python-Updater/Files/dados.txt',
     '../eCobOne/Python-Updater/Files/dados.txt',
+    '../Python-Updater/Files/dados.txt',
     '../Files/dados.txt',
     './Files/dados.txt',
     'dados.txt'
