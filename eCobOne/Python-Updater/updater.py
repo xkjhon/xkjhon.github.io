@@ -165,8 +165,8 @@ def _limpar_dir(d):
                 pass
 
 
-def _aguardar_download(d, timeout=60):
-    """Aguarda o download do CSV ser concluído na pasta temporária."""
+def _aguardar_download(d, timeout=120):
+    """Aguarda o download do CSV ser concluído na pasta temporária (Timeout maximo: 120s / 2 minutos)."""
     os.makedirs(d, exist_ok=True)
     for _ in range(timeout):
         time.sleep(1)
@@ -177,7 +177,7 @@ def _aguardar_download(d, timeout=60):
             csvs = [f for f in arqs if f.endswith(".csv")]
             if csvs:
                 return csvs[0]
-    raise Exception("Timeout aguardando download do arquivo.")
+    raise Exception("Timeout (demorou mais de 2 minutos) aguardando download do arquivo.")
 
 
 def calcular_intervalo_datas():
@@ -197,9 +197,10 @@ def calcular_intervalo_datas():
 # -------------------------------------------------------------
 # Etapa 1: Download Selenium (Salva em Files/Cache)
 # -------------------------------------------------------------
-def baixar_relatorios(usuario=None, senha=None, interactive=True, log=None):
+def baixar_relatorios(usuario=None, senha=None, interactive=True, log=None, max_tentativas=5):
     """
     Baixa os 4 relatórios via Selenium e salva na pasta Files/Cache/.
+    Se demorar mais de 2 minutos ou falhar, fecha o navegador e REINICIA o processo.
     """
     if not log:
         logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s %(message)s")
@@ -226,147 +227,158 @@ def baixar_relatorios(usuario=None, senha=None, interactive=True, log=None):
     os.makedirs(CACHE_DIR, exist_ok=True)
     os.makedirs(DOWNLOAD_TEMP, exist_ok=True)
 
-    opts = Options()
-    opts.add_argument("--headless")
-    opts.add_argument("--disable-gpu")
-    opts.add_argument("--no-sandbox")
-    opts.add_argument("--disable-dev-shm-usage")
-    opts.add_argument("--window-size=1920,1080")
-    opts.add_argument("--log-level=3")
-    opts.add_experimental_option("excludeSwitches", ["enable-logging"])
-    opts.add_experimental_option(
-        "prefs",
-        {
-            "download.default_directory": DOWNLOAD_TEMP,
-            "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-            "safebrowsing.enabled": True,
-        },
-    )
-
-    driver = None
-    try:
-        log.info("[1/2] Inicializando navegador Chrome (Headless)...")
-        driver = webdriver.Chrome(options=opts)
-        wait = WebDriverWait(driver, 30)
-
-        log.info("Acessando portal SIGS para login...")
-        driver.get(LOGIN_URL)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, '//*[@id="ctl00_ConteudoLogin_ControlLogin_UserName"]')
-            )
-        ).send_keys(usuario)
-
-        driver.find_element(
-            By.XPATH, '//*[@id="ctl00_ConteudoLogin_ControlLogin_Password"]'
-        ).send_keys(senha)
-
-        driver.find_element(
-            By.XPATH, '//*[@id="ctl00_ConteudoLogin_ControlLogin_LoginButton"]'
-        ).click()
-        time.sleep(3)
-
-        if "login" in driver.current_url.lower():
-            driver.quit()
-            raise CredencialInvalidaError("Usuário ou senha incorretos no portal SIGS.")
-
-        log.info("Login autenticado com sucesso.")
-
-        driver.get(RELATORIO_URL)
-        time.sleep(5)
-
-        # Seleciona filtro 'Data de importação'
+    for tentativa in range(1, max_tentativas + 1):
+        driver = None
         try:
-            log.info("Selecionando filtro 'Data de importação'...")
-            select_periodo = wait.until(
+            log.info(f"[1/2] Tentativa {tentativa}/{max_tentativas}: Inicializando navegador Chrome (Headless)...")
+            
+            opts = Options()
+            opts.add_argument("--headless")
+            opts.add_argument("--disable-gpu")
+            opts.add_argument("--no-sandbox")
+            opts.add_argument("--disable-dev-shm-usage")
+            opts.add_argument("--window-size=1920,1080")
+            opts.add_argument("--log-level=3")
+            opts.add_experimental_option("excludeSwitches", ["enable-logging"])
+            opts.add_experimental_option(
+                "prefs",
+                {
+                    "download.default_directory": DOWNLOAD_TEMP,
+                    "download.prompt_for_download": False,
+                    "download.directory_upgrade": True,
+                    "safebrowsing.enabled": True,
+                },
+            )
+
+            driver = webdriver.Chrome(options=opts)
+            # Timeout máximo de espera do Selenium de 120s (2 minutos)
+            wait = WebDriverWait(driver, 120)
+
+            log.info("Acessando portal SIGS para login...")
+            driver.get(LOGIN_URL)
+
+            wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="ctl00_ConteudoPaginas_cmbPeriodo"]')
+                    (By.XPATH, '//*[@id="ctl00_ConteudoLogin_ControlLogin_UserName"]')
                 )
-            )
-            select_periodo.click()
-            time.sleep(1)
+            ).send_keys(usuario)
 
-            opt_importacao = wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, '//*[@id="ctl00_ConteudoPaginas_cmbPeriodo"]/option[contains(translate(text(), "IMPORTAÇÃO", "importação"), "importa")]')
-                )
-            )
-            opt_importacao.click()
-            time.sleep(1)
-        except Exception as e_filtro:
-            log.warning(f"Aviso ao selecionar 'Data de importação': {e_filtro}")
+            driver.find_element(
+                By.XPATH, '//*[@id="ctl00_ConteudoLogin_ControlLogin_Password"]'
+            ).send_keys(senha)
 
-        dt_ini, dt_fim = calcular_intervalo_datas()
-        log.info(f"Intervalo de datas definido: {dt_ini} até {dt_fim}")
-
-        try:
-            elem_ini = driver.find_element(By.XPATH, '//*[@id="ctl00_ConteudoPaginas_dtInicial_I"]')
-            elem_ini.clear()
-            elem_ini.send_keys(dt_ini)
-            elem_ini.send_keys(Keys.TAB)
-            time.sleep(1)
-        except Exception as e_dt_ini:
-            log.warning(f"Erro ao preencher Data Inicial: {e_dt_ini}")
-
-        try:
-            elem_fim = driver.find_element(By.XPATH, '//*[@id="ctl00_ConteudoPaginas_dtFinal_I"]')
-            elem_fim.clear()
-            elem_fim.send_keys(dt_fim)
-            elem_fim.send_keys(Keys.TAB)
-            time.sleep(1)
-        except Exception as e_dt_fim:
-            log.warning(f"Erro ao preencher Data Final: {e_dt_fim}")
-
-        # Baixa os 4 arquivos para Files/Cache/
-        for idx, srv in enumerate(SERVICOS, start=1):
-            log.info(f"Baixando ({idx}/4): {srv['nome']}...")
-            _limpar_dir(DOWNLOAD_TEMP)
-
-            wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, '//*[@id="ctl00_ConteudoPaginas_ASPxComboBox4_B-1"]')
-                )
+            driver.find_element(
+                By.XPATH, '//*[@id="ctl00_ConteudoLogin_ControlLogin_LoginButton"]'
             ).click()
-            time.sleep(1)
+            time.sleep(3)
 
-            wait.until(EC.element_to_be_clickable((By.XPATH, srv["xpath"]))).click()
-            time.sleep(1)
+            if "login" in driver.current_url.lower():
+                try: driver.quit()
+                except Exception: pass
+                raise CredencialInvalidaError("Usuário ou senha incorretos no portal SIGS.")
 
-            wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, '//*[@id="ctl00_ConteudoPaginas_btgGerar_CD"]/span')
+            log.info("Login autenticado com sucesso.")
+
+            driver.get(RELATORIO_URL)
+            time.sleep(4)
+
+            # Seleciona filtro 'Data de importação'
+            try:
+                log.info("Selecionando filtro 'Data de importação'...")
+                select_periodo = wait.until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, '//*[@id="ctl00_ConteudoPaginas_cmbPeriodo"]')
+                    )
                 )
-            ).click()
+                select_periodo.click()
+                time.sleep(1)
 
-            arq_tmp = _aguardar_download(DOWNLOAD_TEMP)
-            origem = os.path.join(DOWNLOAD_TEMP, arq_tmp)
-            destino = os.path.join(CACHE_DIR, srv["arquivo_destino"])
+                opt_importacao = wait.until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, '//*[@id="ctl00_ConteudoPaginas_cmbPeriodo"]/option[contains(translate(text(), "IMPORTAÇÃO", "importação"), "importa")]')
+                    )
+                )
+                opt_importacao.click()
+                time.sleep(1)
+            except Exception as e_filtro:
+                log.warning(f"Aviso ao selecionar 'Data de importação': {e_filtro}")
 
-            if os.path.exists(destino):
-                os.remove(destino)
-            shutil.move(origem, destino)
-            log.info(f"✓ {srv['arquivo_destino']} salvo com sucesso em Files/Cache/")
+            dt_ini, dt_fim = calcular_intervalo_datas()
+            log.info(f"Intervalo de datas definido: {dt_ini} até {dt_fim}")
+
+            try:
+                elem_ini = driver.find_element(By.XPATH, '//*[@id="ctl00_ConteudoPaginas_dtInicial_I"]')
+                elem_ini.clear()
+                elem_ini.send_keys(dt_ini)
+                elem_ini.send_keys(Keys.TAB)
+                time.sleep(1)
+            except Exception as e_dt_ini:
+                log.warning(f"Erro ao preencher Data Inicial: {e_dt_ini}")
+
+            try:
+                elem_fim = driver.find_element(By.XPATH, '//*[@id="ctl00_ConteudoPaginas_dtFinal_I"]')
+                elem_fim.clear()
+                elem_fim.send_keys(dt_fim)
+                elem_fim.send_keys(Keys.TAB)
+                time.sleep(1)
+            except Exception as e_dt_fim:
+                log.warning(f"Erro ao preencher Data Final: {e_dt_fim}")
+
+            # Baixa os 4 arquivos para Files/Cache/
+            for idx, srv in enumerate(SERVICOS, start=1):
+                log.info(f"Baixando ({idx}/4): {srv['nome']}...")
+                _limpar_dir(DOWNLOAD_TEMP)
+
+                wait.until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, '//*[@id="ctl00_ConteudoPaginas_ASPxComboBox4_B-1"]')
+                    )
+                ).click()
+                time.sleep(1)
+
+                wait.until(EC.element_to_be_clickable((By.XPATH, srv["xpath"]))).click()
+                time.sleep(1)
+
+                wait.until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, '//*[@id="ctl00_ConteudoPaginas_btgGerar_CD"]/span')
+                    )
+                ).click()
+
+                # Timeout de 120s (2 minutos) por arquivo
+                arq_tmp = _aguardar_download(DOWNLOAD_TEMP, timeout=120)
+                origem = os.path.join(DOWNLOAD_TEMP, arq_tmp)
+                destino = os.path.join(CACHE_DIR, srv["arquivo_destino"])
+
+                if os.path.exists(destino):
+                    os.remove(destino)
+                shutil.move(origem, destino)
+                log.info(f"✓ {srv['arquivo_destino']} salvo com sucesso em Files/Cache/")
+                time.sleep(1)
+
+            driver.quit()
+            try: shutil.rmtree(DOWNLOAD_TEMP)
+            except Exception: pass
+
+            log.info("✓ Todos os 4 arquivos baixados para Files/Cache/ com sucesso.")
+            return True
+
+        except CredencialInvalidaError as e_cred:
+            log.error(f"Erro de credenciais: {e_cred}")
+            if driver:
+                try: driver.quit()
+                except Exception: pass
+            return False
+        except Exception as e:
+            log.warning(f"⚠️ O download demorou mais de 2 minutos ou falhou: {e}")
+            if driver:
+                try: driver.quit()
+                except Exception: pass
+            log.info(f"🔄 REINICIANDO PROCESSO DE DOWNLOAD (Tentativa {tentativa + 1}/{max_tentativas})...")
             time.sleep(2)
 
-        driver.quit()
-        try:
-            shutil.rmtree(DOWNLOAD_TEMP)
-        except Exception:
-            pass
-
-        log.info("✓ Todos os 4 arquivos baixados para Files/Cache/ com sucesso.")
-        return True
-
-    except Exception as e:
-        log.error(f"Erro durante o download Selenium: {e}")
-        if driver:
-            try:
-                driver.quit()
-            except Exception:
-                pass
-        return False
+    log.error(f"Falha após {max_tentativas} tentativas de download.")
+    return False
 
 
 # -------------------------------------------------------------

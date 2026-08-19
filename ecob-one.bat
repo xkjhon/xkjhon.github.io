@@ -17,6 +17,15 @@ echo ------------------------------------------------------------
 cd /d "%~dp0eCobOne\Python-Updater"
 python updater.py
 
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo ⚠️ [AVISO] Ocorreu uma falha ou demora no download.
+    echo 🔄 Reiniciando o processo de atualização em 10 segundos...
+    echo.
+    timeout /t 10 /nobreak
+    goto loop
+)
+
 :: 2. Voltar para a raiz do repositorio
 cd /d "%~dp0"
 
