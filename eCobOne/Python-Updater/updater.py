@@ -11,6 +11,7 @@ import base64
 import hashlib
 import getpass
 import logging
+import subprocess
 from datetime import datetime, timedelta
 
 # Define caminhos do projeto
@@ -776,6 +777,94 @@ def gerar_dados_txt(caminho_csv=None, log=None):
     return DADOS_TXT
 
 
+def zerar_dados_txt_zerado():
+    """Gera a estrutura do arquivo dados.txt com contadores zerados."""
+    agora_str = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    regioes = [
+        ("GERAL", "Geral:"),
+        ("ANA", "Região: ANAPOLIS (ANA)"),
+        ("URU", "Região: URUACU (URU)"),
+        ("LUZ", "Região: LUZIANIA (LUZ)"),
+        ("FOR", "Região: FORMOSA (FOR)"),
+        ("RVR", "Região: RIO VERDE (RVR)"),
+        ("MNH", "Região: MORRINHOS (MNH)")
+    ]
+
+    linhas = []
+    linhas.append(f"Atualizacao: {agora_str}")
+    linhas.append("")
+    linhas.append("Alertas:")
+    linhas.append("0")
+    linhas.append("")
+
+    for cod, header in regioes:
+        linhas.append(header)
+        linhas.append("Serviços: 0")
+        linhas.append("Religas: 0")
+        linhas.append("NePago: 0")
+        linhas.append("Faturamento: R$ 0,00")
+        linhas.append("EmCampo: 0")
+        linhas.append("")
+
+    return "\n".join(linhas) + "\n"
+
+
+def verificar_e_executar_desligamento_20h(log=None):
+    """
+    Verifica se o horário atual é igual ou superior a 20:00 (8 da noite).
+    Se for >= 20h:
+      1. Zera os dados em dados.txt e sincroniza em todas as pastas.
+      2. Agenda o desligamento automático do Windows com 60s de aviso.
+    """
+    agora = datetime.now()
+    if agora.hour >= 20:
+        if log:
+            log.warning("⏰ [20:00 HORA LIMITE DETECTADA] Zerando dados e agendando desligamento...")
+
+        conteudo_zerado = zerar_dados_txt_zerado()
+        DADOS_TXT = os.path.join(FILES_DIR, "dados.txt")
+        with open(DADOS_TXT, "w", encoding="utf-8") as f:
+            f.write(conteudo_zerado)
+
+        try:
+            ecob_dir = os.path.abspath(os.path.join(BASE, ".."))
+            folders_to_sync = [
+                os.path.join(ecob_dir, "Files"),
+                os.path.join(ecob_dir, "m", "Files"),
+                os.path.join(ecob_dir, "Python-Updater", "Files")
+            ]
+            for dst_folder in folders_to_sync:
+                os.makedirs(dst_folder, exist_ok=True)
+                dst_path = os.path.join(dst_folder, "dados.txt")
+                with open(dst_path, "w", encoding="utf-8") as f:
+                    f.write(conteudo_zerado)
+        except Exception as e_sync:
+            if log:
+                log.warning(f"Erro ao sincronizar dados zerados: {e_sync}")
+
+        try:
+            if log:
+                log.info("🚀 Publicando dados zerados no GitHub Pages...")
+            root_repo = os.path.abspath(os.path.join(BASE, "..", ".."))
+            subprocess.run(["git", "add", "."], cwd=root_repo, check=False)
+            commit_msg = f"Auto-reset 20h dados.txt - {agora.strftime('%d/%m/%Y %H:%M:%S')}"
+            subprocess.run(["git", "commit", "-m", commit_msg], cwd=root_repo, check=False)
+            subprocess.run(["git", "push", "origin", "main"], cwd=root_repo, check=False)
+            if log:
+                log.info("✓ Dados zerados publicados no GitHub com sucesso!")
+        except Exception as e_git:
+            if log:
+                log.warning(f"Aviso ao publicar dados zerados no Git: {e_git}")
+
+        if log:
+            log.info("🔌 Agendando desligamento automático do computador em 60 segundos...")
+
+        os.system('shutdown /s /f /t 60 /c "eCobOne: Horário limite de 20h atingido. Dados zerados. Desligando computador..."')
+        return True
+
+    return False
+
+
 # -------------------------------------------------------------
 # Orquestrador Principal
 # -------------------------------------------------------------
@@ -788,6 +877,10 @@ def executar_atualizacao(usuario=None, senha=None, interactive=True, log=None):
     log.info("==================================================")
     log.info("   INICIANDO CICLO DE ATUALIZAÇÃO (eCobOne)")
     log.info("==================================================")
+
+    if verificar_e_executar_desligamento_20h(log=log):
+        log.info("Operação concluída: Dados zerados e desligamento agendado para 20h.")
+        return True
 
     ok_download = baixar_relatorios(usuario=usuario, senha=senha, interactive=interactive, log=log)
     if not ok_download:
