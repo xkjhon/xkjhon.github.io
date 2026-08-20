@@ -1,55 +1,59 @@
-Atualizacao: 20/08/2026 08:12:14
+Atualizacao: 20/08/2026 08:17:01
 
 Alertas:
 0
 
 Geral:
+Serviços: 1
+Religas: 8
+NePago: 0
+Faturamento: R$ 0,00
+EmCampo: 1691
+1;LEANDRO DA COSTA BATISTA;1;3
+2;MARCIEL DE MOURA SANTOS;0;4
+3;RICARDO PEREIRA DA SILVA;0;1
+Piores:
+1;RICARDO PEREIRA DA SILVA;0;1
+2;MARCIEL DE MOURA SANTOS;0;4
+3;LEANDRO DA COSTA BATISTA;1;3
+
+Região: ANAPOLIS (ANA)
 Serviços: 0
 Religas: 4
 NePago: 0
 Faturamento: R$ 0,00
-EmCampo: 1348
-1;MARCIEL DE MOURA SANTOS;0;3
-2;LEANDRO DA COSTA BATISTA;0;1
+EmCampo: 312
+1;MARCIEL DE MOURA SANTOS;0;4
 Piores:
-1;LEANDRO DA COSTA BATISTA;0;1
-2;MARCIEL DE MOURA SANTOS;0;3
+1;MARCIEL DE MOURA SANTOS;0;4
 
-Região: ANAPOLIS (ANA)
-Serviços: 0
+Região: LUZIANIA (LUZ)
+Serviços: 1
 Religas: 3
 NePago: 0
 Faturamento: R$ 0,00
-EmCampo: 264
-1;MARCIEL DE MOURA SANTOS;0;3
+EmCampo: 622
+1;LEANDRO DA COSTA BATISTA;1;3
 Piores:
-1;MARCIEL DE MOURA SANTOS;0;3
-
-Região: LUZIANIA (LUZ)
-Serviços: 0
-Religas: 1
-NePago: 0
-Faturamento: R$ 0,00
-EmCampo: 536
-1;LEANDRO DA COSTA BATISTA;0;1
-Piores:
-1;LEANDRO DA COSTA BATISTA;0;1
+1;LEANDRO DA COSTA BATISTA;1;3
 
 Região: FORMOSA (FOR)
 Serviços: 0
 Religas: 0
 NePago: 0
 Faturamento: R$ 0,00
-EmCampo: 117
+EmCampo: 261
 Piores:
 
 Região: URUAÇU (URU)
 Serviços: 0
-Religas: 0
+Religas: 1
 NePago: 0
 Faturamento: R$ 0,00
-EmCampo: 158
+EmCampo: 157
+1;RICARDO PEREIRA DA SILVA;0;1
 Piores:
+1;RICARDO PEREIRA DA SILVA;0;1
 
 Região: RIO VERDE (RVR)
 Serviços: 0
@@ -64,5 +68,5 @@ Serviços: 0
 Religas: 0
 NePago: 0
 Faturamento: R$ 0,00
-EmCampo: 98
+EmCampo: 164
 Piores:
